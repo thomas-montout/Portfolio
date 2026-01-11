@@ -33,8 +33,12 @@
 
   <body>
     <div class="position-relative w-100 min-vh-100">
+      <!-- ========== HEADER ========== -->
       <header id="header">
-        <nav class="links" style="--items: 6">
+        <!-- prettier-ignore -->
+        <nav class="links" style="--items: 6"> <!-- Nombre d'éléments pour l'animation CSS -->
+          
+          <!-- Dropdown Home -->
           <div class="dropdown-nav">
             <a href="#" class="dropdown-trigger">Home</a>
             <div class="dropdown-content">
@@ -42,8 +46,12 @@
               <a href="./pages/competence.html">Compétences</a>
             </div>
           </div>
+
+          <!-- Liens simples -->
           <a href="./pages/bts-sio.html">Le BTS</a>
           <a href="./pages/ecole-alternance.html">École et alternance</a>
+
+          <!-- Dropdown Missions et Projets -->
           <div class="dropdown-nav">
             <a href="#" class="dropdown-trigger">Missions et Projets</a>
             <div class="dropdown-content">
@@ -51,14 +59,22 @@
               <a href="./pages/projets-E6.html">Projets E6</a>
             </div>
           </div>
+
+          <!-- Liens simples -->
           <a href="./pages/veille-technologique.html">Ma veille technologique</a>
           <a href="./pages/contact.html">Contact</a>
+
+          <!-- Ligne animé sous le lien actif -->
           <span class="line"></span>
         </nav>
       </header>
+      <!-- ========== EO HEADER ========== -->
 
+      <!-- ========== HERO SECTION ========== -->
       <section class="hero_section">
         <div class="hero_container">
+          <!-- ========== PHOTO ========== -->
+          <!-- Photo qui se retourne -->
           <div class="flip-card" id="heroCard">
             <div class="flip-card-inner">
               <div class="flip-card-front">
@@ -69,11 +85,17 @@
               </div>
             </div>
           </div>
+          <!-- ========== EO PHOTO ========== -->
+
+          <!-- ========== TITRE ========== -->
           <h1>
             Je m'appelle Thomas et j'étudie le développement de
             <strong>solutions logicielles et</strong>
             <strong>d'applications métiers</strong>
           </h1>
+          <!-- ========== EO TITRE ========== -->
+
+          <!-- ========== LIENS SOCIAUX ========== -->
           <div class="social_links">
             <a href="https://github.com/TaeVieDev" target="_blank" rel="noopener noreferrer">
               <i class="fa-brands fa-square-github"></i>
@@ -89,30 +111,49 @@
               <i class="fa-solid fa-envelope"></i>
             </a>
           </div>
+          <!-- ========== EO LIENS SOCIAUX ========== -->
         </div>
       </section>
+      <!-- ========== EO HERO SECTION ========== -->
 
+      <!-- ========== ABOUT ME SECTION ========== -->
       <section class="about_me_section" id="about">
         <div class="about_me_container">
           <div class="section_title">
             <h2><strong>En quelques mots</strong></h2>
           </div>
           <p>
-            Tout a commencé par une <strong>curiosité</strong>.<br />
-            Puis un premier tutoriel. Puis des heures à <strong>comprendre</strong>,
-            <strong>tester, casser… et recommencer</strong>. <br />C’est comme ça que le
-            <strong>développement informatique</strong> est devenu une vraie
-            <strong>passion</strong>. En <strong>autodidacte</strong>, j’ai découvert ce que
-            j’aimais vraiment : résoudre des problèmes, structurer des idées et leur donner vie
-            grâce au code. <br />Aujourd’hui, je poursuis ce chemin en BTS SIO SLAM en alternance,
-            avec une envie claire : monter en compétences, gagner de l’expérience terrain et
-            construire des bases solides.
+            Tout a commencé par une
+            <strong>curiosité</strong>
+            .
             <br />
-            Objectif : devenir <strong>développeur full-stack</strong>.
+            Puis un premier tutoriel. Puis des heures à
+            <strong>comprendre</strong>
+            ,
+            <strong>tester, casser… et recommencer</strong>
+            .
+            <br />
+            C’est comme ça que le
+            <strong>développement informatique</strong>
+            est devenu une vraie
+            <strong>passion</strong>
+            . En
+            <strong>autodidacte</strong>
+            , j’ai découvert ce que j’aimais vraiment : résoudre des problèmes, structurer des idées
+            et leur donner vie grâce au code.
+            <br />
+            Aujourd’hui, je poursuis ce chemin en BTS SIO SLAM en alternance, avec une envie claire
+            : monter en compétences, gagner de l’expérience terrain et construire des bases solides.
+            <br />
+            Objectif : devenir
+            <strong>développeur full-stack</strong>
+            .
           </p>
         </div>
       </section>
+      <!-- ========== EO ABOUT ME SECTION ========== -->
 
+      <!-- ========== FOOTER ========== -->
       <footer>
         <div class="footer">
           <div class="footer-social-links">
@@ -133,9 +174,16 @@
           <p>© 2025 Thomas. All rights reserved.</p>
         </div>
       </footer>
+      <!-- ========== EO FOOTER ========== -->
 
+      <!-- ========== BACKGROUND ========== -->
+      <!-- Arrière-plan décoratif en position fixed -->
+      <!-- Reste visible sur toute la page pendant le scroll -->
       <div class="background">
+        <!-- Container des particules animées -->
         <div class="particles">
+          <!-- Grille de 11 carrés qui flottent avec des animations CSS -->
+          <!-- Chaque .square a sa propre animation -->
           <div class="squares">
             <div class="square"></div>
             <div class="square"></div>
@@ -150,8 +198,11 @@
             <div class="square"></div>
           </div>
         </div>
+
+        <!-- Fond uni derrière les particules -->
         <div class="back"></div>
       </div>
+      <!-- ========== EO BACKGROUND ========== -->
 
       <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
       <script src="assets/js/main.js"></script>
