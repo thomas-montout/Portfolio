@@ -92,7 +92,7 @@ p {
   color: rgba(255, 255, 255, 0.4);
 }
 
-/* ========== ZONE DE TEXTE (MESSAGE) ========== */
+/* ========== ZONE DE TEXTE ========== */
 .form-textarea {
   resize: vertical; /* Redimensionnable verticalement uniquement */
   min-height: 120px;

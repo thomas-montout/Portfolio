@@ -126,6 +126,20 @@
   font-size: 1rem;
 }
 
+.btn-cv {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--text-primary);
+  text-decoration: none;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
 /* ========== TITRE DE SECTION ========== */
 .section_title h2 {
   font-size: 2.5rem;
