@@ -1,0 +1,124 @@
+/* ========================================
+   RESPONSIVE - Media queries globales
+   ======================================== */
+
+/* ========================================
+   TABLETTE (max 992px)
+   ======================================== */
+
+@media (max-width: 992px) {
+  /* Containers */
+  .bts_sio_container,
+  .missions_E5_container,
+  .veille_technologique_container,
+  .ecole_alternance_container,
+  .contact_container {
+    padding: 3rem 1.5rem;
+  }
+
+  /* Titres de section */
+  .section_title h2 {
+    font-size: 2rem;
+  }
+
+  /* Paragraphes */
+  p {
+    font-size: 1.2rem;
+  }
+}
+
+/* ========================================
+   MOBILE (max 768px)
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Body padding top pour le header fixe */
+  body {
+    padding-top: 3.5rem;
+  }
+
+  /* Containers */
+  .bts_sio_container,
+  .missions_E5_container,
+  .veille_technologique_container,
+  .ecole_alternance_container,
+  .contact_container {
+    padding: 2rem 0.5rem;
+  }
+
+  /* Titres de section */
+  .section_title h2 {
+    font-size: 1.8rem;
+  }
+
+  /* Paragraphes */
+  p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  /* Corps des cartes - padding interne adapté */
+  .card-E5-body {
+    padding: 1.2rem;
+  }
+
+  /* Boutons en colonne sur mobile */
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .btn-mission {
+    width: 100%;
+  }
+
+  /* Footer */
+  footer {
+    padding: 2rem 1rem;
+  }
+
+  .footer-social-links a {
+    font-size: 1.8rem;
+  }
+}
+
+/* ========================================
+   PETIT MOBILE (max 480px)
+   ======================================== */
+
+@media (max-width: 480px) {
+  /* Containers */
+  .bts_sio_container,
+  .missions_E5_container,
+  .veille_technologique_container,
+  .ecole_alternance_container,
+  .contact_container {
+    padding: 1.5rem 0.25rem;
+  }
+
+  /* Titres de section */
+  .section_title h2 {
+    font-size: 1.5rem;
+  }
+
+  /* Paragraphes */
+  p {
+    font-size: 1rem;
+  }
+
+  /* Corps des cartes - padding minimal sur petit mobile */
+  .card-E5-body {
+    padding: 1rem;
+  }
+
+  /* Boutons dans les cartes - taille texte réduite */
+  .btn-mission {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  /* Images dans les cartes */
+  .card-E5 img,
+  .option-card img {
+    max-height: 150px;
+  }
+}

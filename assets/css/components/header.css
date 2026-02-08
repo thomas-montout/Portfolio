@@ -24,6 +24,27 @@
   position: relative;
 }
 
+/* ========== MENU BURGER (MOBILE) ========== */
+.menu-burger {
+  display: none; /* Caché sur desktop */
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 1002;
+}
+
+.menu-burger:hover {
+  color: var(--text-secondary);
+}
+
+.menu-burger i {
+  pointer-events: none;
+}
+
 /* ========== LIENS DE NAVIGATION ========== */
 .links > a {
   color: var(--text-primary);
@@ -147,4 +168,61 @@
 }
 .links > a:last-of-type:hover ~ .line {
   --index: var(--items);
+}
+
+/* ========================================
+   RESPONSIVE - MEDIA QUERIES
+   ======================================== */
+
+/* ========== TABLETTE (max 992px) ========== */
+@media (max-width: 992px) {
+  .links {
+    font-size: 1.1em;
+  }
+}
+
+/* ========== MOBILE (max 768px) ========== */
+@media (max-width: 768px) {
+  /* Menu burger visible */
+  .menu-burger {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  /* Navigation en colonne sur mobile */
+  .links {
+    grid-template-columns: 1fr; /* Une seule colonne */
+    grid-template-rows: auto;
+    font-size: 1.1em;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    padding-top: 3.5rem; /* Espace pour le burger */
+  }
+
+  /* Navigation ouverte */
+  .links.open {
+    max-height: 100vh;
+  }
+
+  /* Masquer la ligne animée sur mobile */
+  .links > .line {
+    display: none;
+  }
+
+  /* Dropdowns en full width sur mobile */
+  .dropdown-content {
+    position: static;
+    min-width: 100%;
+    box-shadow: none;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Dropdown toujours visible sur mobile quand actif */
+  .dropdown-nav.active .dropdown-content {
+    display: block;
+  }
 }

@@ -9,6 +9,7 @@
 /* Reset et variables globales - à charger en premier */
 @import "./utils/reset.css";
 @import "./utils/variables.css";
+@import "./utils/responsive.css";
 
 /* ========== COMPONENTS ========== */
 /* Composants réutilisables sur toutes les pages */
