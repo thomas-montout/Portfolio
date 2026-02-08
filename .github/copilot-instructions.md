@@ -22,7 +22,10 @@ Portfolio statique BTS SIO présentant missions E5, projets E6 et veille technol
 <section class="{nom}_section">
   <div class="{nom}_container">
     <div class="section_title">
-      <h2><span>//</span> nom_section</h2>
+      <h2>
+        <span>//</span>
+        nom_section
+      </h2>
       <!-- Pattern // présent partout : nav, titres -->
     </div>
   </div>
