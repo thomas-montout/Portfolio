@@ -24,6 +24,10 @@ p {
   margin: 0;
 }
 
+.text-ynov {
+  color: rgba(255, 255, 255, 0.75);
+}
+
 /* ========== CARTES D'INFORMATION ========== */
 /* Carte de base (école) */
 .info-card {
@@ -33,6 +37,26 @@ p {
   padding: 2.5rem;
   transition: all 0.3s ease;
   margin-bottom: 2rem;
+  position: relative;
+}
+
+/* Image Ynov accueil */
+.ynov-accueil-img {
+  position: absolute;
+  top: 3.5rem;
+  right: 3.5rem;
+  width: 590px;
+  height: auto;
+  border-radius: 8px;
+  opacity: 0.8;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.ynov-card:hover .ynov-accueil-img {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 /* Effet hover sur les cartes */
@@ -51,6 +75,26 @@ p {
 .coface-card:hover {
   border-color: var(--text-secondary);
   box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+}
+
+/* Vidéo Coface */
+.coface-video {
+  position: absolute;
+  top: 3.5rem;
+  right: 3.5rem;
+  width: 530px;
+  height: 131px;
+  object-fit: cover;
+  border-radius: 8px;
+  opacity: 0.8;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.coface-card:hover .coface-video {
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 /* ========== BADGES ========== */
