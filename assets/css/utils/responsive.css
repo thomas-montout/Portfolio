@@ -32,34 +32,55 @@
    ======================================== */
 
 @media (max-width: 768px) {
-  /* Body padding top pour le header fixe */
+  /* Body padding top réduit pour le header fixe */
   body {
-    padding-top: 3.5rem;
+    padding-top: 3rem;
   }
 
-  /* Containers */
+  /* Containers - marges minimales pour plus d'espace */
   .bts_sio_container,
   .missions_E5_container,
   .veille_technologique_container,
   .ecole_alternance_container,
   .contact_container {
-    padding: 2rem 0.5rem;
+    padding: 1rem 0.25rem !important;
   }
 
-  /* Titres de section */
+  /* Titres de section - plus compacts */
   .section_title h2 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 
-  /* Paragraphes */
+  /* Paragraphes - taille réduite */
   p {
-    font-size: 1.1rem;
-    line-height: 1.7;
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 
-  /* Corps des cartes - padding interne adapté */
+  /* Cartes Bootstrap - suppression gap latéral */
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .row > * {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  /* Corps des cartes - padding interne réduit */
   .card-E5-body {
-    padding: 1.2rem;
+    padding: 1rem;
+  }
+
+  /* Titre carte */
+  .card-E5-title {
+    font-size: 1.2rem;
+  }
+
+  /* Texte carte */
+  .card-E5-text {
+    font-size: 0.9rem;
   }
 
   /* Boutons en colonne sur mobile */
@@ -69,11 +90,12 @@
 
   .btn-mission {
     width: 100%;
+    font-size: 0.85rem;
   }
 
   /* Footer */
   footer {
-    padding: 2rem 1rem;
+    padding: 2rem 0.5rem;
   }
 
   .footer-social-links a {
@@ -86,34 +108,43 @@
    ======================================== */
 
 @media (max-width: 480px) {
-  /* Containers */
+  /* Containers - marges quasi nulles et padding vertical réduit */
   .bts_sio_container,
   .missions_E5_container,
   .veille_technologique_container,
   .ecole_alternance_container,
   .contact_container {
-    padding: 1.5rem 0.25rem;
+    padding: 1rem 0.15rem !important;
+  }
+
+  body {
+    padding: 3.5rem 1.5rem 0 !important;
   }
 
   /* Titres de section */
   .section_title h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   /* Paragraphes */
   p {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
-  /* Corps des cartes - padding minimal sur petit mobile */
+  /* Corps des cartes - padding minimal */
   .card-E5-body {
-    padding: 1rem;
+    padding: 0.8rem;
   }
 
-  /* Boutons dans les cartes - taille texte réduite */
+  /* Titre carte plus petit */
+  .card-E5-title {
+    font-size: 1.1rem;
+  }
+
+  /* Boutons dans les cartes */
   .btn-mission {
-    font-size: 0.85rem;
-    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.6rem;
   }
 
   /* Images dans les cartes */
