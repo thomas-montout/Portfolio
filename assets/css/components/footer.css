@@ -2,7 +2,6 @@
    FOOTER - Pied de page
    ======================================== */
 
-/* ========== CONTENEUR FOOTER ========== */
 .footer {
   display: flex;
   flex-wrap: wrap;
@@ -23,7 +22,6 @@ footer .footer-social-links {
   font-size: larger;
 }
 
-/* Icônes des réseaux sociaux */
 footer .footer-social-links a {
   color: var(--text-secondary);
   text-decoration: none;
@@ -34,14 +32,12 @@ footer .footer-social-links a {
   margin-right: 0.5rem;
 }
 
-/* Effet hover sur les icônes */
 footer .footer-social-links a:hover {
   color: var(--text-secondary);
   cursor: pointer;
-  transform: scale(1.2); /* Agrandissement au survol */
+  transform: scale(1.2);
 }
 
-/* ========== TEXTE COPYRIGHT ========== */
 footer p {
   color: var(--text-secondary);
   font-size: 0.9rem;

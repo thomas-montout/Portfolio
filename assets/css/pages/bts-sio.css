@@ -2,21 +2,18 @@
    BTS SIO - Page de présentation du BTS
    ======================================== */
 
-/* ========== CONTENEUR PRINCIPAL ========== */
 .bts_sio_container {
   padding: 4rem 2rem;
   color: var(--text-secondary);
   font-size: larger;
 }
 
-/* ========== TITRE DE SECTION ========== */
 .section_title h2 {
   margin-bottom: 2rem;
   letter-spacing: 1px;
   word-spacing: 1px;
 }
 
-/* ========== PARAGRAPHES ========== */
 p {
   font-size: 1.4rem;
   letter-spacing: 1px;
@@ -26,7 +23,6 @@ p {
 }
 
 /* ========== CARTES D'OPTIONS (SLAM/SISR) ========== */
-/* Carte de base */
 .option-card {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -36,15 +32,14 @@ p {
   transition: all 0.3s ease;
 }
 
-/* Effet hover sur les cartes */
 .option-card:hover {
   background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-5px); /* Élévation au survol */
+  transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* ========== CARTE SLAM (MON OPTION) ========== */
-/* Style spécifique pour mettre en avant ma spécialité */
+/* ========== CARTE SLAM ========== */
+/* Bordure spéciale pour mettre en avant ma spécialité */
 .slam-card {
   border: 2px solid rgba(255, 107, 107, 0.3);
 }
@@ -55,7 +50,6 @@ p {
 }
 
 /* ========== BADGES D'OPTIONS ========== */
-/* Badge générique */
 .option-badge {
   display: inline-block;
   background: rgba(255, 255, 255, 0.1);
@@ -70,14 +64,13 @@ p {
   transition: all 0.3s ease;
 }
 
-/* Badge SLAM - couleur spéciale */
+/* Badge SLAM - couleur accent */
 .slam-badge {
   background: rgba(255, 107, 107, 0.15);
   border-color: var(--text-secondary);
   color: var(--text-secondary);
 }
 
-/* Animation du badge au hover de la carte */
 .option-card:hover .option-badge {
   transform: scale(1.05);
 }
@@ -87,7 +80,7 @@ p {
   box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
 }
 
-/* ========== TITRES DES CARTES ========== */
+/* ========== TITRES ET SOUS-TITRES ========== */
 .option-card h3 {
   color: var(--text-primary);
   font-size: 1.8rem;
@@ -97,12 +90,10 @@ p {
   transition: color 0.3s ease;
 }
 
-/* Changement de couleur du titre SLAM au hover */
 .slam-card:hover h3 {
   color: var(--text-secondary);
 }
 
-/* ========== SOUS-TITRES ET DESCRIPTIONS ========== */
 .option-subtitle {
   color: var(--text-secondary);
   font-size: 1.1rem !important;
@@ -116,7 +107,6 @@ p {
   line-height: 1.8;
 }
 
-/* ========== TITRES H3 GÉNÉRAUX ========== */
 h3 {
   margin-top: 2rem;
   margin-bottom: 1rem;
@@ -154,6 +144,7 @@ h3 {
   position: relative;
 }
 
+/* Flèche personnalisée en remplacement des bullets */
 .debouches-list li::before {
   content: "▸";
   color: var(--text-secondary);
@@ -163,7 +154,7 @@ h3 {
   font-size: 1.2rem;
 }
 
-/* Effet hover sur les éléments de la liste */
+/* Glissement au hover */
 .debouches-list li:hover {
   color: var(--text-primary);
   padding-left: 1.8rem;

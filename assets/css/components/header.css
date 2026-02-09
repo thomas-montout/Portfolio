@@ -2,31 +2,31 @@
    HEADER - Navigation principale
    ======================================== */
 
-/* ========== CONTENEUR HEADER ========== */
 #header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000; /* Au-dessus de tout le contenu */
+  z-index: 1000;
 }
 
 /* ========== BARRE DE NAVIGATION ========== */
+/* Grille dynamique : le nombre de colonnes dépend de --items */
 .links {
   background-color: var(--bg-primary);
   background-image: linear-gradient(to bottom, var(--bg-primary), transparent);
   border-bottom: 1px solid var(--bg-primary);
-  box-shadow: 0 0 32px var(--bg-primary); /* Ombre diffuse */
+  box-shadow: 0 0 32px var(--bg-primary);
   font-size: 1.3em;
   font-weight: 300;
   display: grid;
-  grid-template-columns: repeat(var(--items), 1fr); /* Grille dynamique selon --items */
+  grid-template-columns: repeat(var(--items), 1fr);
   position: relative;
 }
 
 /* ========== MENU BURGER (MOBILE) ========== */
 .menu-burger {
-  display: none; /* Caché sur desktop */
+  display: none;
   background: none;
   border: none;
   color: var(--text-primary);
@@ -59,12 +59,11 @@
   color: var(--text-primary);
 }
 
-/* ========== MENU DÉROULANT (DROPDOWN) ========== */
+/* ========== MENU DÉROULANT ========== */
 .dropdown-nav {
   position: relative;
 }
 
-/* Déclencheur du dropdown */
 .dropdown-trigger {
   color: var(--text-primary);
   padding: 0.75em;
@@ -80,7 +79,7 @@
   color: var(--text-primary);
 }
 
-/* Contenu du dropdown (caché par défaut) */
+/* Caché par défaut, affiché via JS (.active) */
 .dropdown-content {
   display: none;
   position: absolute;
@@ -93,7 +92,6 @@
   border: 1px solid var(--bg-secondary);
 }
 
-/* Liens dans le dropdown */
 .dropdown-content a {
   color: var(--text-primary);
   padding: 0.75em 1em;
@@ -108,13 +106,12 @@
   color: var(--text-primary);
 }
 
-/* Affichage du dropdown quand actif (via JS) */
 .dropdown-nav.active .dropdown-content {
   display: block;
 }
 
 /* ========== LIGNE ANIMÉE SOUS LES LIENS ========== */
-/* Ligne qui suit le hover des liens */
+/* Position et largeur calculées dynamiquement selon --index et --items */
 .links > .line {
   background: var(--text-primary);
   height: 1px;
@@ -128,14 +125,12 @@
   --index: 0;
 }
 
-/* Affiche la ligne au hover */
 .links > a:hover ~ .line,
 .links > .dropdown-nav:hover ~ .line {
   opacity: 1;
 }
 
-/* ========== POSITIONS DE LA LIGNE PAR ÉLÉMENT ========== */
-/* Calcul de la position selon l'index de l'élément survolé */
+/* Position de la ligne selon l'élément survolé */
 .links > .dropdown-nav:nth-of-type(1):hover ~ .line {
   --index: 1;
 }
@@ -170,20 +165,14 @@
   --index: var(--items);
 }
 
-/* ========================================
-   RESPONSIVE - MEDIA QUERIES
-   ======================================== */
-
-/* ========== TABLETTE (max 992px) ========== */
+/* ========== RESPONSIVE ========== */
 @media (max-width: 992px) {
   .links {
     font-size: 1.1em;
   }
 }
 
-/* ========== MOBILE (max 768px) ========== */
 @media (max-width: 768px) {
-  /* Menu burger visible */
   .menu-burger {
     display: block;
     position: absolute;
@@ -191,28 +180,26 @@
     right: 0;
   }
 
-  /* Navigation en colonne sur mobile */
+  /* Menu vertical avec animation max-height */
   .links {
-    grid-template-columns: 1fr; /* Une seule colonne */
+    grid-template-columns: 1fr;
     grid-template-rows: auto;
     font-size: 1.1em;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s ease;
-    padding-top: 3.5rem; /* Espace pour le burger */
+    padding-top: 3.5rem;
   }
 
-  /* Navigation ouverte */
   .links.open {
     max-height: 100vh;
   }
 
-  /* Masquer la ligne animée sur mobile */
   .links > .line {
     display: none;
   }
 
-  /* Dropdowns en full width sur mobile */
+  /* Dropdown en pleine largeur sur mobile */
   .dropdown-content {
     position: static;
     min-width: 100%;
@@ -221,7 +208,6 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Dropdown toujours visible sur mobile quand actif */
   .dropdown-nav.active .dropdown-content {
     display: block;
   }

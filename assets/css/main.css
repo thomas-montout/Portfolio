@@ -9,7 +9,6 @@
 /* Reset et variables globales - à charger en premier */
 @import "./utils/reset.css";
 @import "./utils/variables.css";
-@import "./utils/responsive.css";
 
 /* ========== COMPONENTS ========== */
 /* Composants réutilisables sur toutes les pages */
@@ -29,3 +28,7 @@
 @import "./pages/projets-E6.css";
 @import "./pages/bts-sio.css";
 @import "./pages/missions-E5.css";
+
+/* ========== RESPONSIVE ========== */
+/* Media queries en dernier pour avoir la priorité sur les styles de pages */
+@import "./utils/responsive.css";

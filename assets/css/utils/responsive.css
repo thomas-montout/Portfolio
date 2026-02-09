@@ -2,12 +2,8 @@
    RESPONSIVE - Media queries globales
    ======================================== */
 
-/* ========================================
-   TABLETTE (max 992px)
-   ======================================== */
-
+/* ========== TABLETTE (max 992px) ========== */
 @media (max-width: 992px) {
-  /* Containers */
   .bts_sio_container,
   .missions_E5_container,
   .veille_technologique_container,
@@ -16,28 +12,40 @@
     padding: 3rem 1.5rem;
   }
 
-  /* Titres de section */
   .section_title h2 {
     font-size: 2rem;
   }
 
-  /* Paragraphes */
   p {
     font-size: 1.2rem;
   }
+
+  h3,
+  .info-card h3,
+  .option-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .mini-card h4,
+  .debouches-section h4 {
+    font-size: 1.1rem;
+  }
+
+  .debouches-list li {
+    font-size: 1rem;
+  }
+
+  .info-subtitle {
+    font-size: 1rem !important;
+  }
 }
 
-/* ========================================
-   MOBILE (max 768px)
-   ======================================== */
-
+/* ========== MOBILE (max 768px) ========== */
 @media (max-width: 768px) {
-  /* Body padding top réduit pour le header fixe */
   body {
     padding-top: 3rem;
   }
 
-  /* Containers - marges minimales pour plus d'espace */
   .bts_sio_container,
   .missions_E5_container,
   .veille_technologique_container,
@@ -46,18 +54,60 @@
     padding: 1rem 0.25rem !important;
   }
 
-  /* Titres de section - plus compacts */
   .section_title h2 {
     font-size: 1.5rem;
   }
 
-  /* Paragraphes - taille réduite */
   p {
     font-size: 0.95rem;
     line-height: 1.6;
   }
 
-  /* Cartes Bootstrap - suppression gap latéral */
+  h3,
+  .info-card h3,
+  .option-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .mini-card h4,
+  .debouches-section h4 {
+    font-size: 1rem;
+  }
+
+  .mini-card p {
+    font-size: 0.85rem !important;
+  }
+
+  .debouches-list li {
+    font-size: 0.95rem;
+  }
+
+  .info-subtitle {
+    font-size: 0.95rem !important;
+  }
+
+  .department-info {
+    font-size: 0.9rem !important;
+  }
+
+  .info-badge,
+  .option-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem;
+  }
+
+  .education-details strong {
+    font-size: 1rem;
+  }
+
+  .education-details .school {
+    font-size: 0.85rem;
+  }
+
+  .job-tasks li {
+    font-size: 0.85rem;
+  }
+
   .row {
     margin-left: 0;
     margin-right: 0;
@@ -68,22 +118,18 @@
     padding-right: 0.25rem;
   }
 
-  /* Corps des cartes - padding interne réduit */
   .card-E5-body {
     padding: 1rem;
   }
 
-  /* Titre carte */
   .card-E5-title {
     font-size: 1.2rem;
   }
 
-  /* Texte carte */
   .card-E5-text {
     font-size: 0.9rem;
   }
 
-  /* Boutons en colonne sur mobile */
   .card-actions {
     flex-direction: column;
   }
@@ -93,7 +139,7 @@
     font-size: 0.85rem;
   }
 
-  /* Adaptation image Ynov et vidéo Coface en bannière */
+  /* Bannières Ynov et Coface en pleine largeur sur mobile */
   .ynov-accueil-img,
   .coface-video {
     position: relative !important;
@@ -121,7 +167,6 @@
     max-height: 150px !important;
   }
 
-  /* Ajustement cartes avec images/vidéos */
   .info-card {
     padding-top: 1rem !important;
     overflow: hidden !important;
@@ -131,7 +176,6 @@
     margin-top: 1rem !important;
   }
 
-  /* Footer */
   footer {
     padding: 2rem 0.5rem;
   }
@@ -141,12 +185,8 @@
   }
 }
 
-/* ========================================
-   PETIT MOBILE (max 480px)
-   ======================================== */
-
+/* ========== PETIT MOBILE (max 480px) ========== */
 @media (max-width: 480px) {
-  /* Containers - marges quasi nulles et padding vertical réduit */
   .bts_sio_container,
   .missions_E5_container,
   .veille_technologique_container,
@@ -159,39 +199,77 @@
     padding: 3.5rem 1.5rem 0 !important;
   }
 
-  /* Titres de section */
   .section_title h2 {
     font-size: 1.3rem;
   }
 
-  /* Paragraphes */
   p {
     font-size: 0.9rem;
   }
 
-  /* Corps des cartes - padding minimal */
+  h3,
+  .info-card h3,
+  .option-card h3 {
+    font-size: 1.15rem;
+  }
+
+  .mini-card h4,
+  .debouches-section h4 {
+    font-size: 0.95rem;
+  }
+
+  .mini-card p {
+    font-size: 0.8rem !important;
+  }
+
+  .debouches-list li {
+    font-size: 0.85rem;
+  }
+
+  .info-subtitle {
+    font-size: 0.85rem !important;
+  }
+
+  .department-info {
+    font-size: 0.85rem !important;
+  }
+
+  .info-badge,
+  .option-badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.8rem;
+  }
+
+  .education-details strong {
+    font-size: 0.9rem;
+  }
+
+  .education-details .school {
+    font-size: 0.8rem;
+  }
+
+  .job-tasks li {
+    font-size: 0.8rem;
+  }
+
   .card-E5-body {
     padding: 0.8rem;
   }
 
-  /* Titre carte plus petit */
   .card-E5-title {
     font-size: 1.1rem;
   }
 
-  /* Boutons dans les cartes */
   .btn-mission {
     font-size: 0.8rem;
     padding: 0.5rem 0.6rem;
   }
 
-  /* Image/vidéo encore plus compactes sur très petit écran */
   .ynov-accueil-img,
   .coface-video {
     max-height: 120px !important;
   }
 
-  /* Images dans les cartes */
   .card-E5 img,
   .option-card img {
     max-height: 150px;

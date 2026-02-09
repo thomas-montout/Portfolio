@@ -1,26 +1,23 @@
 /* ========================================
-   RESET CSS - Réinitialisation des styles
+   RESET - Réinitialisation des styles
    ======================================== */
 
-/* ========== COMPORTEMENT DU SCROLL ========== */
 html {
-  scroll-behavior: smooth; /* Animation fluide lors du scroll */
-  scroll-padding-top: 80px; /* Compense la hauteur du header fixe */
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Compense le header fixe */
 }
 
-/* ========== RESET UNIVERSEL ========== */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; /* Inclut padding et border dans la largeur */
+  box-sizing: border-box;
 }
 
-/* ========== BODY - BASE DU DOCUMENT ========== */
 body {
   font-family: "Josefin Sans", sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-secondary);
   padding-top: 5rem;
   position: relative;
-  padding: 5rem 4rem 1rem; /* Espace pour le header fixe */
+  padding: 5rem 4rem 1rem;
 }
