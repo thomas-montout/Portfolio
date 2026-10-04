@@ -2011,46 +2011,193 @@ footer p {
   }
 }
 
-/* ========== VEILLE TECHNOLOGIQUE ========== */
+/* ========== VEILLE TECHNOLOGIQUE ==========
+   Section #veille : sujet, outils et sources, flux RSS en direct, puis fiches d'articles.
+   Réutilise .subsection_title (titres de sous-parties, section Missions)
+   et .mini-card (encadrés outils / sources, section École). */
 .veille_technologique_container {
   padding: 4rem 2rem;
   color: var(--color-text-secondary);
   font-size: larger;
 }
 
-.veille_technologique_cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+/* Problématique mise en avant, avec la bordure gauche de la timeline du parcours. */
+.veille-sujet {
+  margin-top: 1rem;
+  padding: 1.2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid var(--color-text-secondary);
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  font-size: 1.4rem;
+  font-style: italic;
+}
+
+/* Texte d'introduction sous le sujet et sous chaque titre de sous-partie. */
+.veille-intro {
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Listes outils / sources : puce "▸" comme les débouchés du BTS. */
+.veille-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.6rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.veille-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--color-text-secondary);
+}
+
+.veille-list strong,
+.veille-list a {
+  color: var(--color-text-primary);
+}
+
+.veille-list a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.3s ease;
+}
+
+.veille-list a:hover {
+  color: var(--color-text-secondary);
+}
+
+/* Emplacement du widget RSS.app (son contenu est généré par leur script). */
+.veille-feed {
   margin-top: 2rem;
 }
 
-.veille_technologique_card {
+/* Fiche article : même base visuelle que les cartes missions (.card-E5) :
+   l'image en haut, le texte en dessous dans .veille-card__body.
+   overflow: hidden coupe l'image aux coins arrondis de la carte. */
+.veille-card {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 2rem;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   transition: all 0.3s ease;
 }
 
-.veille_technologique_card:hover {
+.veille-card:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-5px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.veille_technologique_card h3 {
+/* Image en bandeau 2:1. object-fit: cover = remplit le cadre sans déformer (rogne les bords). */
+.veille-card__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Visuel de remplacement : icône de l'axe sur un dégradé du thème. Deux fonds superposés :
+   une grille de points (comme le fond du site) par-dessus le dégradé. */
+.veille-card__img--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--color-text-secondary);
+  background:
+    radial-gradient(circle, rgba(232, 216, 196, 0.15) 1px, transparent 1px) 0 0 / 16px 16px,
+    linear-gradient(135deg, var(--color-bg-secondary), var(--color-bg-primary));
+}
+
+/* Texte de la fiche. flex-grow: 1 = occupe toute la hauteur restante de la carte. */
+.veille-card__body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex-grow: 1;
+}
+
+/* Ligne du haut : source + date (+ axe). flex-wrap = passe à la ligne si la carte est étroite. */
+.veille-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.veille-card__source {
+  padding: 0.25rem 0.8rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
   color: var(--color-text-primary);
-  font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 1rem;
   letter-spacing: 1px;
 }
 
-.veille_technologique_card p {
+/* Badge de l'axe (cartes « À la une ») : margin-left: auto le pousse tout à droite. */
+.veille-card__axe {
+  margin-left: auto;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.veille-card__title {
+  color: var(--color-text-primary);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+.veille-card__resume {
   color: rgba(255, 255, 255, 0.8);
   font-size: 1rem;
-  line-height: 1.7;
+}
+
+/* « Pourquoi c'est important » : séparé du résumé par un filet. */
+.veille-card__why {
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+}
+
+.veille-card__why strong {
+  color: var(--color-text-primary);
+}
+
+/* margin-top: auto pousse le lien en bas de la carte : les liens restent alignés
+   même quand deux cartes voisines n'ont pas la même longueur de texte. */
+.veille-card__link {
+  margin-top: auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.veille-card__link:hover {
+  color: var(--color-text-primary);
 }
 
 @media (max-width: 992px) {
@@ -2062,9 +2209,26 @@ footer p {
   .veille_technologique_container {
     padding: 2rem 0.5rem;
   }
+  .veille-sujet {
+    font-size: 1.15rem;
+    padding: 1rem;
+  }
+  .veille-card__body {
+    padding: 1.25rem;
+  }
+  .veille-card__resume,
+  .veille-list li {
+    font-size: 0.9rem;
+  }
 }
 @media (max-width: 480px) {
   .veille_technologique_container {
     padding: 1.5rem 0.25rem;
+  }
+  .veille-sujet {
+    font-size: 1rem;
+  }
+  .veille-card__body {
+    padding: 1rem;
   }
 }
