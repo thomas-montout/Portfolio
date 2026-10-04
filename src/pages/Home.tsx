@@ -4,6 +4,7 @@ import BtsSio from "./BtsSio";
 import Competence from "./Competence";
 import EcoleAlternance from "./EcoleAlternance";
 import MissionsE5 from "./MissionsE5";
+import VeilleTechnologique from "./VeilleTechnologique";
 import Contact from "./Contact";
 
 // Home en single-page : toutes les sections du portfolio sont rendues à la suite.
@@ -125,6 +126,7 @@ export default function Home() {
       <EcoleAlternance />
       {/* MissionsE5 inclut maintenant aussi les projets E6 (fusion pour éviter le conflit d'id). */}
       <MissionsE5 />
+      <VeilleTechnologique />
       <Contact />
     </>
   );

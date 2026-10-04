@@ -8,6 +8,7 @@ const navItems = [
   { id: "competences", label: "Compétences" },
   { id: "ecole", label: "École" },
   { id: "missions", label: "Missions" },
+  { id: "veille", label: "Veille" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -18,7 +19,7 @@ const navItems = [
 //   → le lien actif change tout seul quand on scrolle.
 export default function Header() {
   // active = id de la section actuellement active
-  const [active, setActive] = useState<string>("hero"); 
+  const [active, setActive] = useState<string>("hero");
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation(); // useLocation = info sur l'URL actuelle (pathname, hash, etc.)
   const navigate = useNavigate(); // useNavigate = fonction pour naviguer vers une autre URL (ex : navigate("/#contact") pour aller à la section contact)
