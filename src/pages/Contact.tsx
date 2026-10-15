@@ -7,7 +7,7 @@ type Status = "idle" | "sending" | "sent" | "error";
 // Endpoint Formspree : constante hors composant pour éviter de la recréer à chaque render.
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xbdbbdjy";
 
-export default function Contact({ id = "contact" }: { id?: string }) {
+export default function Contact() {
   const [status, setStatus] = useState<Status>("idle");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,7 +39,7 @@ export default function Contact({ id = "contact" }: { id?: string }) {
   };
 
   return (
-    <section id={id} className="contact_section">
+    <section className="contact_section">
       <div className="contact_container">
         <SectionTitle>Me contacter</SectionTitle>
         <p>

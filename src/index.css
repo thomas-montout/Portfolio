@@ -67,10 +67,42 @@ html {
   left: 0;
   height: 3px;
   background: linear-gradient(90deg, var(--color-text-secondary), var(--color-text-primary));
+  /* Halo lumineux sous la barre */
+  box-shadow: 0 0 10px rgba(232, 216, 196, 0.6);
   z-index: 2000;
   transition: width 0.05s linear;
   /* pointer-events: none → la barre ne bloque pas le clic sur le header */
   pointer-events: none;
+}
+
+/* Balayage à chaque changement de page : la barre traverse l'écran puis s'efface.
+   forwards = l'élément reste sur la dernière image (invisible) une fois l'animation finie. */
+.route-sweep {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, var(--color-text-secondary), var(--color-text-primary));
+  box-shadow: 0 0 10px rgba(232, 216, 196, 0.6);
+  z-index: 2001;
+  pointer-events: none;
+  animation: route-sweep 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes route-sweep {
+  0% {
+    width: 0;
+    opacity: 1;
+  }
+  70% {
+    width: 100%;
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
 }
 
 .scroll-top {
@@ -144,6 +176,21 @@ body {
   color: var(--color-text-secondary);
   position: relative;
   padding: 5rem 4rem 1rem;
+  /* "Sticky footer" : body fait au moins la hauteur de l'écran (padding compris, grâce au
+     box-sizing: border-box de Tailwind) et empile ses enfants en colonne. #root puis <main>
+     prennent l'espace restant → sur une page courte, le footer reste collé en bas
+     au lieu de flotter au milieu, et la page ne scrolle pas pour rien.
+     svh = hauteur d'écran "petite" sur mobile (barre d'adresse affichée), vh en repli. */
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 992px) {
@@ -304,9 +351,83 @@ p {
 }
 
 /* Lien actif : pill claire à l'intérieur du conteneur */
-.pill-nav a.active {
+.pill-nav a.active,
+.pill-dropdown__toggle.active {
   background: rgba(255, 255, 255, 0.12);
   color: var(--color-text-primary);
+}
+
+/* Menu déroulant (Projets → E5 / E6).
+   Le bouton reprend exactement le style des liens de la pilule. */
+.pill-dropdown {
+  position: relative;
+  display: flex;
+}
+
+.pill-dropdown__toggle {
+  padding: 0.55rem 1.1rem;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition:
+    color 0.3s ease,
+    background 0.3s ease;
+}
+
+.pill-dropdown__toggle:hover {
+  color: var(--color-text-primary);
+}
+
+.pill-dropdown__toggle i {
+  font-size: 0.65rem;
+  transition: transform 0.3s ease;
+}
+
+.pill-dropdown__toggle[aria-expanded="true"] i {
+  transform: rotate(180deg);
+}
+
+/* Fond quasi opaque plutôt qu'un backdrop-filter : un flou imbriqué dans la pilule
+   (qui a déjà le sien) ne verrait pas la page derrière. */
+.pill-dropdown__menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 150px;
+  padding: 0.3rem;
+  background: rgba(70, 22, 29, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Pont invisible au-dessus du menu : la souris peut traverser l'espace
+   entre le bouton et le menu sans le refermer. */
+.pill-dropdown__menu::before {
+  content: "";
+  position: absolute;
+  inset: -0.7rem 0 100% 0;
+}
+
+.pill-dropdown__menu.open {
+  display: flex;
+}
+
+.pill-dropdown__menu a {
+  text-align: center;
 }
 
 /* Burger : caché en desktop, visible en mobile */
@@ -352,6 +473,39 @@ p {
 
   .pill-nav a {
     text-align: center;
+  }
+
+  /* Dans le menu burger, le groupe Projets est toujours déplié :
+     le bouton devient un petit intitulé, E5 / E6 s'affichent juste dessous. */
+  .pill-dropdown {
+    flex-direction: column;
+  }
+  .pill-dropdown__toggle {
+    justify-content: center;
+    pointer-events: none;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .pill-dropdown__toggle.active {
+    background: none;
+  }
+  .pill-dropdown__toggle i {
+    display: none;
+  }
+  .pill-dropdown__menu {
+    display: flex;
+    position: static;
+    transform: none;
+    min-width: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+  .pill-dropdown__menu::before {
+    content: none;
   }
 }
 
@@ -477,14 +631,14 @@ footer p {
 
 /* ========== HOME : ABOUT ========== */
 .about_me_container {
-  padding: 4rem 0;
+  padding: 2rem 2rem;
   color: var(--color-text-primary);
   font-size: 1rem;
 }
 
 @media (max-width: 768px) {
   .about_me_container {
-    padding: 2rem 0.25rem;
+    padding: 2rem 0.5rem;
   }
   .about_me_section p {
     font-size: 1.1rem;
@@ -501,11 +655,39 @@ footer p {
   }
 }
 
+/* ========== PARCOURS ========== */
+/* Intro du parcours : encadré pleine largeur, avec la même bordure gauche que la question
+   de la page Veille, pour la détacher des deux timelines.
+   margin-bottom 1rem + les 2rem de marge haute du titre « Parcours académique » = 3rem d'espace. */
+.parcours-intro {
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid var(--color-text-secondary);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+/* Espace entre le sous-titre de chaque parcours et sa timeline */
+.parcours-timelines .education-timeline {
+  margin-top: 1.25rem;
+}
+
+/* Année au-dessus du titre (au lieu d'une colonne à gauche) : le texte récupère
+   toute la largeur, les tâches tiennent sur une ligne au lieu de deux. */
+.parcours-timelines .education-item {
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.parcours-timelines .job-tasks {
+  margin: 0.5rem 0 0;
+}
+
 /* ========== TIMELINE ========== */
 .education-timeline {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .education-item {
@@ -529,12 +711,6 @@ footer p {
   font-weight: 700;
   font-size: 1.2rem;
   min-width: 60px;
-  flex-shrink: 0;
-}
-
-.education-item .separator {
-  color: var(--color-text-secondary);
-  font-size: 1.2rem;
   flex-shrink: 0;
 }
 
@@ -626,7 +802,7 @@ footer p {
 
 /* ========== BOUTON CV ========== */
 .cv-download {
-  margin-top: 3rem;
+  margin-top: 2rem;
   display: flex;
   justify-content: center;
 }
@@ -1004,22 +1180,6 @@ footer p {
   }
 }
 
-/* Bouton "Retour aux missions" en haut de la page liste /missions/categorie/:category */
-.list-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  font-weight: 500;
-  width: fit-content;
-  transition: color 0.3s ease;
-}
-
-.list-back:hover {
-  color: var(--color-text-primary);
-}
-
 /* ========================================
    SPOTLIGHT — Halo lumineux au curseur
    ========================================
@@ -1060,7 +1220,9 @@ footer p {
    PAGES — CSS PORTÉ DE L'ANCIEN SITE
    ======================================== */
 
-/* ========== CARDS (Missions E5 + Projets E6) ========== */
+/* ========== CARDS (Missions E5 + Projets E6) ==========
+   Version compacte : image plus basse, textes plus petits, techs en icônes seules
+   et boutons en pastilles sur une ligne → 4 cartes par rangée en grand écran. */
 .card-E5 {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1075,27 +1237,25 @@ footer p {
 
 .card-E5:hover {
   background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .card-E5-img {
   width: 100%;
-  /* aspect-ratio: 16/9 → on fige le ratio plutôt qu'une hauteur fixe.
-     Avantage : toutes les images ont la même proportion, peu importe leur taille source.
+  /* aspect-ratio : on fige le ratio plutôt qu'une hauteur fixe → toutes les images ont
+     la même proportion. 2/1 au lieu de 16/9 pour des cartes moins hautes.
      object-fit cover + position center = sujet centré, bords rognés sans déformer. */
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 2 / 1;
   height: auto;
   object-fit: cover;
   object-position: center;
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px 12px 0 0;
   display: block;
 }
 
 .card-E5-body {
-  /* Réduit de 1.5rem → 1rem : marges intérieures plus compactes. */
-  padding: 1rem;
+  padding: 0.85rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -1103,61 +1263,43 @@ footer p {
 
 .card-E5-title {
   color: var(--color-text-primary);
-  /* Réduit de 1.4rem → 1.15rem : titres moins envahissants. */
-  font-size: 1.15rem;
-  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .card-E5-text {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
   flex-grow: 1;
 }
 
 .card-E5-icons {
   display: flex;
   flex-wrap: wrap;
-  /* Gap réduit (1.5rem → 1rem) pour rester cohérent avec les icônes plus petites. */
-  gap: 1rem;
-  justify-content: center;
-  /* Marge haute pour aérer entre la description et la rangée des techs. */
-  margin-top: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
 }
 
 .tech-icon {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  /* Gap entre l'icône et son label, réduit (0.5rem → 0.35rem) pour compacter. */
-  gap: 0.35rem;
 }
 
 .tech-icon i {
-  /* Taille réduite (1.8rem → 1.4rem) : icônes moins envahissantes sur les cartes.
-     La taille du gros badge sur la page détail reste indépendante (autre composant). */
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   transition: transform 0.3s ease;
 }
 
 .tech-icon .custom-tech-icon {
   /* Aligné sur la taille des icônes Devicon ci-dessus. */
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.2rem;
+  height: 1.2rem;
   object-fit: contain;
   transition: transform 0.3s ease;
-}
-
-.tech-icon p {
-  color: var(--color-text-primary);
-  /* Label tech légèrement réduit (0.9rem → 0.8rem) pour suivre la diminution des icônes. */
-  font-size: 0.8rem;
-  font-weight: 500;
-  margin: 0;
 }
 
 .card-E5:hover .tech-icon i,
@@ -1167,22 +1309,28 @@ footer p {
 
 .card-actions {
   display: flex;
-  gap: 0.8rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin-top: auto;
 }
 
 .btn-mission {
-  flex: 1;
-  padding: 0.6rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
+  border-radius: 999px;
   color: var(--color-text-primary);
   text-decoration: none;
-  text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 500;
   transition: all 0.3s ease;
+}
+
+.btn-mission i {
+  font-size: 0.75rem;
 }
 
 .btn-mission:hover {
@@ -1192,44 +1340,49 @@ footer p {
   transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
+/* Mobile (1 colonne, sous le breakpoint sm de Tailwind) : carte en "media object".
+   Vignette à gauche + titre à droite sur la première ligne, puis texte, techs et boutons
+   en pleine largeur → une carte fait environ la moitié de sa hauteur en colonne.
+   display: contents sur le body = ses enfants deviennent directement des cases de la
+   grille de la carte, sans toucher au JSX. */
+@media (max-width: 639px) {
+  .card-E5 {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    column-gap: 0.75rem;
+    align-items: start;
+    padding: 0.75rem;
+  }
+  .card-E5-img {
+    grid-column: 1;
+    grid-row: 1;
+    border-radius: 8px;
+  }
   .card-E5-body {
-    padding: 1rem;
+    display: contents;
   }
   .card-E5-title {
-    font-size: 1.2rem;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    margin: 0;
+  }
+  .card-E5-text,
+  .card-E5-icons,
+  .card-actions {
+    grid-column: 1 / -1;
   }
   .card-E5-text {
-    font-size: 0.9rem;
+    margin: 0.6rem 0 0.5rem;
   }
-  .card-actions {
-    flex-direction: column;
-  }
-  .btn-mission {
-    width: 100%;
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .card-E5-body {
-    padding: 0.8rem;
-  }
-  .card-E5-title {
-    font-size: 1.1rem;
-  }
-  .btn-mission {
-    font-size: 0.8rem;
-    padding: 0.5rem 0.6rem;
-  }
-  .card-E5 img {
-    max-height: 150px;
+  .card-E5-icons {
+    margin-bottom: 0.6rem;
   }
 }
 
 /* ========== BTS SIO ========== */
 .bts_sio_container {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
   color: var(--color-text-secondary);
   font-size: larger;
 }
@@ -1238,7 +1391,7 @@ footer p {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 2.5rem;
+  padding: 2rem;
   height: 100%;
   transition: all 0.3s ease;
 }
@@ -1275,7 +1428,7 @@ footer p {
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 2px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
@@ -1318,19 +1471,19 @@ footer p {
 
 .option-card p:not(.option-subtitle) {
   color: rgba(255, 255, 255, 0.8);
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
 .bts_sio_section h3 {
-  margin-top: 2rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   letter-spacing: 1px;
   word-spacing: 1px;
 }
 
 .debouches-section {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -1342,39 +1495,36 @@ footer p {
   letter-spacing: 1px;
 }
 
+/* Débouchés en pastilles qui passent à la ligne : 2 rangées au lieu de 5 lignes. */
 .debouches-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .debouches-list li {
   color: rgba(255, 255, 255, 0.85);
-  font-size: 1.1rem;
-  line-height: 1.8;
-  margin-bottom: 0.7rem;
-  padding-left: 1.5rem;
-  position: relative;
-}
-
-.debouches-list li::before {
-  content: "▸";
-  color: var(--color-text-secondary);
-  position: absolute;
-  left: 0;
-  font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
+  padding: 0.35rem 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .debouches-list li:hover {
   color: var(--color-text-primary);
-  padding-left: 1.8rem;
-  transition: all 0.2s ease;
+  border-color: var(--color-text-secondary);
 }
 
 @media (max-width: 992px) {
   .bts_sio_container {
-    padding: 3rem 1.5rem;
+    padding: 2rem 1.5rem;
   }
   .bts_sio_section h3,
   .info-card h3,
@@ -1432,116 +1582,76 @@ footer p {
 
 /* ========== COMPÉTENCES ========== */
 .competences_container {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
   color: var(--color-text-secondary);
 }
 
-.category {
-  margin-bottom: 3rem;
-  margin-top: 3rem;
-}
-
-.category h3 {
-  color: var(--color-text-primary);
-  font-size: 1.5rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 2rem;
-  position: relative;
-  letter-spacing: 1px;
-  word-spacing: 1px;
-}
-
-.category h3::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 1px;
-  background: var(--color-text-secondary);
-}
-
-.competences_section .skills {
-  max-width: 1200px;
-  margin-top: 2rem;
-}
-
-/* ========== PYRAMIDE COMPÉTENCES ==========
-   Structure : un container flex column, et chaque rangée est un flex row centré.
-   Avantage par rapport à grid : la dernière rangée est centrée même si elle a moins d'items
-   (avec grid, on aurait dû gérer le décalage manuellement). */
-.skills-pyramid {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 2rem;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.skills-pyramid__row {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-/* Largeur fixe des skill-card dans la pyramide pour garder l'effet pyramidal visuel
-   (sans largeur fixe, flex centrerait avec des tailles variables et casserait la forme). */
-.skills-pyramid__row .skill-card {
-  flex: 0 0 200px;
-  max-width: 200px;
-}
-
-@media (max-width: 768px) {
-  .skills-pyramid__row .skill-card {
-    flex: 0 0 140px;
-    max-width: 140px;
-  }
-}
-
-@media (max-width: 480px) {
-  .skills-pyramid__row .skill-card {
-    flex: 0 0 110px;
-    max-width: 110px;
-  }
-  .skills-pyramid__row {
-    gap: 0.6rem;
-  }
-}
-
-.skill-card {
+/* Une carte par catégorie (3 côte à côte en grand écran), remplie de pastilles. */
+.skill-group {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 2rem 1rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  height: 100%;
+  padding: 1.25rem;
+  transition: background 0.3s ease;
+}
+
+.skill-group:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.skill-group h3 {
+  color: var(--color-text-primary);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+/* Grille de mini-cartes dans chaque bloc.
+   auto-fill : autant de colonnes que la largeur le permet, chacune de 5.5rem minimum ;
+   1fr : les colonnes s'étirent pour remplir toute la ligne. */
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Les anciennes cartes (icône au-dessus, nom en dessous), en version réduite :
+   icône 2rem au lieu de 3.5rem, padding 0.85rem au lieu de 2rem. */
+.skill-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.5rem;
+  padding: 0.85rem 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .skill-card:hover {
   background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
 .skill-card i {
-  font-size: 3.5rem;
+  font-size: 2rem;
   transition: transform 0.3s ease;
 }
 
 .skill-card .custom-tech-icon {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 2rem;
+  height: 2rem;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
@@ -1551,16 +1661,16 @@ footer p {
   transform: scale(1.1);
 }
 
-.skill-card p {
+.skill-card span {
   color: var(--color-text-primary);
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  margin: 0;
+  line-height: 1.3;
 }
 
 /* ========== CONTACT ========== */
 .contact_container {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
   color: var(--color-text-secondary);
   font-size: larger;
 }
@@ -1656,7 +1766,7 @@ footer p {
 
 @media (max-width: 992px) {
   .contact_container {
-    padding: 3rem 1.5rem;
+    padding: 2rem 1.5rem;
   }
 }
 @media (max-width: 768px) {
@@ -1679,7 +1789,7 @@ footer p {
 
 /* ========== ÉCOLE & ALTERNANCE ========== */
 .ecole_alternance_container {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
   color: var(--color-text-secondary);
 }
 
@@ -1691,9 +1801,8 @@ footer p {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 2.5rem;
+  padding: 2rem;
   transition: all 0.3s ease;
-  margin-bottom: 2rem;
   position: relative;
 }
 
@@ -1758,7 +1867,7 @@ footer p {
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 2px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
@@ -1807,14 +1916,14 @@ footer p {
 .poste-info {
   color: rgba(255, 255, 255, 0.7);
   font-size: 1rem !important;
-  margin-bottom: 2rem !important;
+  margin-bottom: 1rem !important;
 }
 
 .mini-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1.1rem;
   height: 100%;
   transition: all 0.3s ease;
 }
@@ -1841,7 +1950,7 @@ footer p {
 
 @media (max-width: 992px) {
   .ecole_alternance_container {
-    padding: 3rem 1.5rem;
+    padding: 2rem 1.5rem;
   }
   /* Sur tablette, on remonte les visuels au-dessus du texte plutôt que positionnés en absolute (sinon ils chevauchent). */
   .ynov-accueil-img,
@@ -1873,7 +1982,7 @@ footer p {
     font-size: 0.85rem;
   }
   .debouches-list li {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
   .department-info {
     font-size: 0.9rem;
@@ -1904,7 +2013,7 @@ footer p {
     font-size: 0.8rem;
   }
   .debouches-list li {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
   .department-info {
     font-size: 0.85rem;
@@ -1924,7 +2033,7 @@ footer p {
 
 /* ========== MISSIONS E5 ========== */
 .missions_E5_container {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
   color: var(--color-text-secondary);
   font-size: larger;
 }
@@ -1934,19 +2043,74 @@ footer p {
   font-size: 1.6rem;
   font-weight: 600;
   letter-spacing: 1px;
-  margin-top: 3rem;
+  margin-top: 2rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  /* Layout flex : titre à gauche, lien "Afficher plus" à droite.
-     wrap = sur très petit écran, le lien passe sous le titre au lieu de déborder. */
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  flex-wrap: wrap;
 }
 
-/* Placeholder "À venir" affiché dans une sous-section vide (page formation,
+/* Onglets de la page E5 : même look que la pilule du header. */
+.tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 1.5rem;
+  padding: 0.3rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.3s ease,
+    background 0.3s ease;
+}
+
+.tab:hover {
+  color: var(--color-text-primary);
+}
+
+.tab.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 480px) {
+  .tabs {
+    display: flex;
+  }
+  .tab {
+    flex: 1;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.4rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Nombre de projets dans l'onglet */
+.tab__count {
+  font-size: 0.75rem;
+  min-width: 1.4rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+/* Placeholder "À venir" affiché dans une sous-section vide (onglet formation,
    bloc Cybersécurité tant qu'aucune mission n'y est rattachée).
    Subtil pour ne pas attirer le regard mais structurellement visible. */
 .empty-block-message {
@@ -1961,36 +2125,9 @@ footer p {
   letter-spacing: 1px;
 }
 
-/* Lien "Afficher plus" à côté du titre de sous-section.
-   Ton secondaire pour rester discret, micro-interaction au hover. */
-.show-more {
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: color 0.3s ease;
-}
-
-.show-more i {
-  font-size: 0.8rem;
-  transition: transform 0.3s ease;
-}
-
-.show-more:hover {
-  color: var(--color-text-primary);
-}
-
-.show-more:hover i {
-  transform: translateX(3px);
-}
-
 @media (max-width: 992px) {
   .missions_E5_container {
-    padding: 3rem 1.5rem;
+    padding: 2rem 1.5rem;
   }
 }
 @media (max-width: 768px) {
@@ -1999,7 +2136,7 @@ footer p {
   }
   .subsection_title {
     font-size: 1.3rem;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
   }
 }
 @media (max-width: 480px) {
@@ -2012,11 +2149,11 @@ footer p {
 }
 
 /* ========== VEILLE TECHNOLOGIQUE ==========
-   Section #veille : sujet, outils et sources, flux RSS en direct, puis fiches d'articles.
+   Page Veille : sujet, flux RSS en direct, fil chronologique des fiches, outils et sources.
    Réutilise .subsection_title (titres de sous-parties, section Missions)
    et .mini-card (encadrés outils / sources, section École). */
 .veille_technologique_container {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
   color: var(--color-text-secondary);
   font-size: larger;
 }
@@ -2071,85 +2208,386 @@ footer p {
   color: var(--color-text-secondary);
 }
 
-/* Emplacement du widget RSS.app (son contenu est généré par leur script). */
-.veille-feed {
-  margin-top: 2rem;
-}
-
-/* Fiche article : même base visuelle que les cartes missions (.card-E5) :
-   l'image en haut, le texte en dessous dans .veille-card__body.
-   overflow: hidden coupe l'image aux coins arrondis de la carte. */
-.veille-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s ease;
-}
-
-.veille-card:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-/* Image en bandeau 2:1. object-fit: cover = remplit le cadre sans déformer (rogne les bords). */
-.veille-card__img {
+/* ---------- Vignette d'article (composant Vignette, fiches + flux RSS) ----------
+   object-fit: cover = remplit le cadre sans déformer (rogne les bords).
+   object-position 30 % : on rogne surtout le bas, ce qui garde les visages des portraits. */
+.vignette {
   display: block;
-  width: 100%;
-  aspect-ratio: 2 / 1;
   object-fit: cover;
+  object-position: 50% 30%;
   background: rgba(0, 0, 0, 0.2);
 }
 
-/* Visuel de remplacement : icône de l'axe sur un dégradé du thème. Deux fonds superposés :
-   une grille de points (comme le fond du site) par-dessus le dégradé. */
-.veille-card__img--placeholder {
+/* Visuel de remplacement : icône sur une grille de points (comme le fond du site)
+   posée sur un dégradé du thème. */
+.vignette--placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
   color: var(--color-text-secondary);
   background:
     radial-gradient(circle, rgba(232, 216, 196, 0.15) 1px, transparent 1px) 0 0 / 16px 16px,
     linear-gradient(135deg, var(--color-bg-secondary), var(--color-bg-primary));
 }
 
-/* Texte de la fiche. flex-grow: 1 = occupe toute la hauteur restante de la carte. */
-.veille-card__body {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  flex-grow: 1;
+/* ---------- Flux RSS en direct ---------- */
+.rss-feed {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
 }
 
-/* Ligne du haut : source + date (+ axe). flex-wrap = passe à la ligne si la carte est étroite. */
-.veille-card__meta {
+.rss-feed__header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 1rem;
+  gap: 0.75rem 1rem;
+}
+
+.rss-feed__heading {
+  flex: 1;
+  min-width: 220px;
+}
+
+.rss-feed__heading h3 {
+  color: var(--color-text-primary);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.rss-feed__heading p {
   font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Pastille "En direct" : point rouge qui pulse, comme un direct télé. */
+.rss-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid rgba(255, 107, 107, 0.5);
+  border-radius: 999px;
+  color: #ff8a8a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.rss-live__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff6b6b;
+  animation: rss-pulse 1.6s ease-out infinite;
+}
+
+.rss-live.is-off {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.rss-live.is-off .rss-live__dot {
+  background: rgba(255, 255, 255, 0.4);
+  animation: none;
+}
+
+@keyframes rss-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgba(255, 107, 107, 0);
+  }
+}
+
+.rss-feed__raw {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.rss-feed__raw:hover {
+  color: var(--color-text-primary);
+}
+
+/* 6 articles : 3 colonnes en grand écran, 2 en tablette, 1 en mobile. */
+.rss-feed__list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+/* Onglets des sources : un peu moins d'espace au-dessus que sur la page E5. */
+.rss-feed .tabs {
+  margin-top: 1rem;
+}
+
+/* Une carte = miniature à gauche + [ (média) + titre + date ] empilés à droite. */
+.rss-item {
+  display: flex;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.65rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  text-decoration: none;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.rss-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* La miniature prend toute la hauteur de la carte (align-self: stretch, valeur par défaut
+   en flex) : les vignettes restent alignées quelle que soit la longueur du titre. */
+.rss-item__img {
+  flex: 0 0 6.5rem;
+  width: 6.5rem;
+  min-height: 4.5rem;
+  border-radius: 6px;
+  font-size: 1.4rem;
+  transition: transform 0.3s ease;
+}
+
+.rss-item:hover .rss-item__img {
+  transform: scale(1.04);
+}
+
+/* min-width: 0 : sans ça, un titre très long empêcherait la colonne de rétrécir. */
+.rss-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Nom du média (onglet « Tous ») : petite pastille, align-self l'empêche de prendre toute la largeur. */
+.rss-item__source {
+  align-self: flex-start;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* line-clamp : coupe le titre à 3 lignes avec "…" */
+.rss-item__title {
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* margin-top: auto pousse la date en bas de la carte : alignée d'une carte à l'autre. */
+.rss-item__date {
+  margin-top: auto;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.75rem;
+}
+
+/* Squelette de chargement : bloc qui "respire" en attendant le flux. */
+.rss-item--skeleton {
+  min-height: 5rem;
+  animation: rss-skeleton 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes rss-skeleton {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.rss-feed__error {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.rss-feed__error a {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Fil chronologique des fiches ---------- */
+/* Une ligne verticale à gauche (::before de la liste), un point par fiche (::before de chaque li). */
+.veille-timeline {
+  position: relative;
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0 0 0 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.veille-timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.45rem;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  width: 2px;
+  background: linear-gradient(var(--color-text-secondary), rgba(255, 107, 107, 0.7));
+  opacity: 0.5;
+}
+
+.veille-timeline > li {
+  position: relative;
+}
+
+.veille-timeline > li::before {
+  content: "";
+  position: absolute;
+  left: calc(-1.3rem - 5px);
+  top: 1.35rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-bg-primary);
+  border: 2px solid var(--color-text-secondary);
+}
+
+.veille-timeline > li.is-une::before {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
+}
+
+/* ---------- Fiche article ---------- */
+/* Grille : 1 colonne en mobile (vignette au-dessus), 2 colonnes dès 768px (vignette à gauche). */
+.veille-card {
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.veille-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Fiches « À la une » : même bordure accentuée que la carte SLAM / Coface. */
+.veille-card--une {
+  border: 2px solid rgba(255, 107, 107, 0.3);
+}
+
+.veille-card--une:hover {
+  border-color: var(--color-text-secondary);
+}
+
+/* Vignette : bandeau 2:1 en mobile, miniature 16:10 dans la colonne de gauche ensuite.
+   overflow: hidden coupe l'image aux coins arrondis, et pendant le zoom au survol. */
+.veille-card__thumb {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.veille-card__thumb .vignette {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  font-size: 2.5rem;
+  transition: transform 0.4s ease;
+}
+
+.veille-card:hover .veille-card__thumb .vignette {
+  transform: scale(1.04);
+}
+
+/* Contenu de la fiche : média, titre, résumé, pourquoi, lien. min-width: 0 = peut rétrécir. */
+.veille-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .veille-card {
+    grid-template-columns: 14rem 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .veille-card__thumb .vignette {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* Ligne du haut : [Média] date ……… (À la une) CATÉGORIE */
+.veille-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* Nom du média en pastille. */
+.veille-card__source {
+  padding: 0.2rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.veille-card__date {
   color: var(--color-text-secondary);
 }
 
-.veille-card__source {
-  padding: 0.25rem 0.8rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  color: var(--color-text-primary);
-  font-weight: 600;
-  letter-spacing: 1px;
+/* margin-left: auto pousse le groupe badge + catégorie tout à droite de la ligne. */
+.veille-card__tags {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
-/* Badge de l'axe (cartes « À la une ») : margin-left: auto le pousse tout à droite. */
-.veille-card__axe {
-  margin-left: auto;
+.veille-card__categorie {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.veille-card__badge {
+  padding: 0.2rem 0.7rem;
+  background: rgba(255, 107, 107, 0.15);
+  border: 1px solid var(--color-text-secondary);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 2px;
@@ -2164,35 +2602,43 @@ footer p {
   letter-spacing: 0.5px;
 }
 
+/* Résumé en texte confortable : c'est le cœur de la fiche. */
 .veille-card__resume {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 1rem;
+  line-height: 1.7;
 }
 
-/* « Pourquoi c'est important » : séparé du résumé par un filet. */
+/* « Pourquoi c'est important » : séparé du résumé par un simple trait horizontal. */
 .veille-card__why {
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.75);
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-text-primary);
   font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.65;
 }
 
 .veille-card__why strong {
-  color: var(--color-text-primary);
+  font-weight: 700;
 }
 
-/* margin-top: auto pousse le lien en bas de la carte : les liens restent alignés
-   même quand deux cartes voisines n'ont pas la même longueur de texte. */
+/* Lien vers l'article + éventuel « Voir aussi ». */
+.veille-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1rem;
+  font-size: 0.85rem;
+}
+
 .veille-card__link {
-  margin-top: auto;
-  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--color-text-secondary);
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   transition: color 0.3s ease;
 }
 
@@ -2200,9 +2646,23 @@ footer p {
   color: var(--color-text-primary);
 }
 
+.veille-card__see-also {
+  flex-basis: 100%;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.veille-card__see-also:hover {
+  color: var(--color-text-primary);
+}
+
 @media (max-width: 992px) {
   .veille_technologique_container {
-    padding: 3rem 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+  .rss-feed__list {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 @media (max-width: 768px) {
@@ -2213,8 +2673,11 @@ footer p {
     font-size: 1.15rem;
     padding: 1rem;
   }
-  .veille-card__body {
-    padding: 1.25rem;
+  .rss-feed__list {
+    grid-template-columns: 1fr;
+  }
+  .veille-card {
+    padding: 1rem 1.1rem;
   }
   .veille-card__resume,
   .veille-list li {
@@ -2228,7 +2691,16 @@ footer p {
   .veille-sujet {
     font-size: 1rem;
   }
-  .veille-card__body {
+  .veille-timeline {
+    padding-left: 1.25rem;
+  }
+  .veille-timeline::before {
+    left: 0.3rem;
+  }
+  .veille-timeline > li::before {
+    left: calc(-0.95rem - 5px);
+  }
+  .rss-feed {
     padding: 1rem;
   }
 }

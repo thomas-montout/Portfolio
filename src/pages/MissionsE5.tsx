@@ -1,103 +1,88 @@
-import { Link } from "react-router-dom";
-import { missions, missionsByCategory } from "../data/missions";
-import MissionCard from "../components/MissionCard";
+import { useSearchParams } from "react-router-dom";
+import {
+  type MissionBlock,
+  type MissionCategory,
+  missionsByBlock,
+  missionsByCategory,
+} from "../data/missions";
+import { MissionGrid } from "../components/MissionCard";
 import SectionTitle from "../components/SectionTitle";
 
-// Page Missions E5.
+// Page dédiée E5 (route /e5).
 // Les données vivent dans /data/missions.ts → une seule source de vérité partagée
-// avec la page détail /missions/:slug et la page liste /missions/categorie/:category.
+// avec la page E6 (/e6).
 //
-// Sur la home on n'affiche que les 3 premières missions de chaque catégorie pour
-// éviter une section géante (surtout en mobile, 1 colonne) ; un bouton "Afficher
-// plus" amène vers la page liste complète si la catégorie en compte davantage.
+// Onglets Formation / Entreprise / Personnel : une seule catégorie affichée à la fois,
+// au lieu de 3 sections empilées → beaucoup moins de scroll.
+// L'onglet actif est stocké dans l'URL (?categorie=personnel) plutôt que dans un useState :
+// le lien est partageable, et après avoir ouvert un PDF, le retour arrière revient
+// sur le bon onglet.
 
-// Petit helper local : entête d'une sous-section avec son titre + le lien "Afficher plus"
-// quand il y a plus de 3 missions. Évite de dupliquer la même JSX 4 fois plus bas.
-function SubsectionHeader({
-  title,
-  href,
-  showMore,
-}: {
-  title: string;
-  href: string;
-  showMore: boolean;
-}) {
-  return (
-    <h3 className="subsection_title">
-      <span>{title}</span>
-      {showMore && (
-        <Link to={href} className="show-more">
-          Afficher plus <i className="fa-solid fa-arrow-right" />
-        </Link>
-      )}
-    </h3>
-  );
-}
+const tabs: { key: MissionCategory; label: string }[] = [
+  { key: "formation", label: "Formation" },
+  { key: "entreprise", label: "Entreprise" },
+  { key: "personnel", label: "Personnel" },
+];
 
-export default function MissionsE5({ id = "missions" }: { id?: string }) {
-  // Récupération des missions par catégorie via le helper.
-  const formation = missionsByCategory("formation");
-  const entreprise = missionsByCategory("entreprise");
-  const personnels = missionsByCategory("personnel");
-  // Projets E6 = filtrage direct sur le tableau missions (l'épreuve est portée par chaque mission).
-  // On a fusionné E5 et E6 ici pour éviter un conflit d'id="missions" dupliqué dans le DOM.
-  const projetsE6 = missions.filter((m) => m.epreuve === "E6");
+// Blocs BTS SIO affichés dans l'onglet formation, dans l'ordre du référentiel.
+const formationBlocks: { key: MissionBlock; title: string }[] = [
+  { key: "support", title: "Support et mise à disposition de services informatiques" },
+  { key: "cyber", title: "Cybersécurité des services informatiques" },
+  { key: "slam", title: "Solution Logiciel et Application Métier" },
+];
 
-  // Limite à 3 par sous-section sur la home. Le reste est accessible via "Afficher plus".
-  const LIMIT = 3;
+export default function MissionsE5() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  // Valeur absente ou inconnue dans l'URL → onglet formation par défaut.
+  const current = tabs.find((t) => t.key === searchParams.get("categorie"))?.key ?? "formation";
 
   return (
-    <section id={id} className="missions_E5_section">
+    <section className="missions_E5_section">
       <div className="missions_E5_container">
-        <SectionTitle>Missions & Projets</SectionTitle>
+        <SectionTitle>Projets E5</SectionTitle>
         <p>
           Projets réalisés dans le cadre de ma formation en BTS SIO, mettant en avant mes
           compétences techniques et ma capacité à travailler sur des projets variés.
         </p>
 
-        <SubsectionHeader
-          title="Projets en formation"
-          href="/missions/categorie/formation"
-          showMore={formation.length > LIMIT}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-          {formation.slice(0, LIMIT).map((m) => (
-            <MissionCard key={m.slug} mission={m} />
+        <div className="tabs" role="tablist">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              role="tab"
+              aria-selected={current === t.key}
+              className={`tab ${current === t.key ? "active" : ""}`}
+              // replace : changer d'onglet ne crée pas une entrée d'historique par clic.
+              onClick={() => setSearchParams({ categorie: t.key }, { replace: true })}
+            >
+              {t.label}
+              <span className="tab__count">{missionsByCategory(t.key).length}</span>
+            </button>
           ))}
         </div>
 
-        <SubsectionHeader
-          title="Projets en entreprise"
-          href="/missions/categorie/entreprise"
-          showMore={entreprise.length > LIMIT}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-          {entreprise.slice(0, LIMIT).map((m) => (
-            <MissionCard key={m.slug} mission={m} />
-          ))}
-        </div>
-
-        <SubsectionHeader
-          title="Projets épreuve E6"
-          href="/missions/categorie/e6"
-          showMore={projetsE6.length > LIMIT}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-          {projetsE6.slice(0, LIMIT).map((m) => (
-            <MissionCard key={m.slug} mission={m} />
-          ))}
-        </div>
-
-        <SubsectionHeader
-          title="Projets personnels"
-          href="/missions/categorie/personnel"
-          showMore={personnels.length > LIMIT}
-        />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-          {personnels.slice(0, LIMIT).map((m) => (
-            <MissionCard key={m.slug} mission={m} />
-          ))}
-        </div>
+        {current === "formation" ? (
+          // Onglet formation : regroupé par bloc du référentiel BTS SIO.
+          formationBlocks.map((b) => {
+            const list = missionsByBlock(b.key);
+            return (
+              <div key={b.key}>
+                <h3 className="subsection_title">
+                  <span>{b.title}</span>
+                </h3>
+                {list.length > 0 ? (
+                  <MissionGrid list={list} />
+                ) : (
+                  // Placeholder "À venir" : montre la structure complète des 3 blocs même si l'un est vide.
+                  <p className="empty-block-message">À venir</p>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <MissionGrid list={missionsByCategory(current)} />
+        )}
       </div>
     </section>
   );

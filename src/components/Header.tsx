@@ -1,87 +1,113 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+
+type PageLink = { to: string; label: string };
+// Un item de nav est soit un lien vers une page, soit un groupe de liens (menu déroulant).
+type NavItem = PageLink | { label: string; children: PageLink[] };
 
 // Liste centralisée des items de nav : ajouter une entrée = ajouter ici, pas dans le JSX.
-const navItems = [
-  { id: "hero", label: "Accueil" },
-  { id: "bts", label: "BTS" },
-  { id: "competences", label: "Compétences" },
-  { id: "ecole", label: "École" },
-  { id: "missions", label: "Missions" },
-  { id: "veille", label: "Veille" },
-  { id: "contact", label: "Contact" },
+// Chaque lien = une page (route déclarée dans App.tsx).
+const navItems: NavItem[] = [
+  { to: "/", label: "Accueil" },
+  {
+    label: "Parcours",
+    children: [
+      { to: "/parcours", label: "Mon parcours" },
+      { to: "/alternance", label: "École & alternance" },
+      { to: "/bts", label: "BTS SIO" },
+    ],
+  },
+  { to: "/competence", label: "Compétences" },
+  {
+    label: "Projets",
+    children: [
+      { to: "/e5", label: "Projets E5" },
+      { to: "/e6", label: "Projets E6" },
+    ],
+  },
+  { to: "/veille-technologique", label: "Veille" },
+  { to: "/contact", label: "Contact" },
 ];
+
+// Menu déroulant d'un groupe de liens (ex : Projets → E5 / E6).
+// - Souris : s'ouvre au survol. Tactile / clavier : s'ouvre au clic sur le bouton.
+// - Se referme au clic en dehors, sur Échap, ou quand on choisit une page.
+// - En mobile (menu burger), le CSS l'affiche toujours déplié : le bouton devient un simple intitulé.
+function NavDropdown({
+  label,
+  items,
+  onNavigate,
+}: {
+  label: string;
+  items: PageLink[];
+  onNavigate: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const { pathname } = useLocation();
+  // Le bouton du groupe s'allume quand on est sur une de ses pages.
+  const isActive = items.some((i) => pathname.startsWith(i.to));
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      // contains = le clic a-t-il eu lieu DANS le menu ? Si non, on ferme.
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={ref}
+      className="pill-dropdown"
+      // pointerType === "mouse" : sur écran tactile, un tap déclenche aussi pointerenter,
+      // qui ouvrirait le menu juste avant que le clic ne le referme.
+      onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(true)}
+      onPointerLeave={(e) => e.pointerType === "mouse" && setOpen(false)}
+    >
+      <button
+        type="button"
+        className={`pill-dropdown__toggle ${isActive ? "active" : ""}`}
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        {label} <i className="fa-solid fa-chevron-down" />
+      </button>
+      <div className={`pill-dropdown__menu ${open ? "open" : ""}`}>
+        {items.map((i) => (
+          <NavLink
+            key={i.to}
+            to={i.to}
+            onClick={() => {
+              setOpen(false);
+              onNavigate();
+            }}
+          >
+            {i.label}
+          </NavLink>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // Header flottant
 // - Centré en haut, fond semi-transparent + backdrop-blur (effet de flou sur le fond)
-// - Liens ancres qui scrollent vers les sections de Home
-// - Détection auto de la section active via IntersectionObserver
-//   → le lien actif change tout seul quand on scrolle.
+// - Un NavLink par page : React Router pose tout seul la classe "active" sur le lien
+//   de la page courante, pas besoin de gérer un state "active" à la main.
 export default function Header() {
-  // active = id de la section actuellement active
-  const [active, setActive] = useState<string>("hero");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation(); // useLocation = info sur l'URL actuelle (pathname, hash, etc.)
-  const navigate = useNavigate(); // useNavigate = fonction pour naviguer vers une autre URL (ex : navigate("/#contact") pour aller à la section contact)
-
-  // Les ancres ne sont valides que sur la home : sur une page détail, on doit
-  // d'abord revenir à "/" avant de scroller.
-  const onHome = location.pathname === "/";
-
-  // IntersectionObserver : observe chaque <section id="..."> et nous prévient
-  // quand elle entre/sort du viewport.
-  // rootMargin "-40% 0px -50% 0px" → la zone active est dans la moitié haute
-  // du viewport, ce qui donne un effet "le lien change un peu avant que la
-  // section atteigne le haut", plus naturel.
-
-  useEffect(() => {
-    // On utilise useEffect quand on veut faire du DOM pur ou des opérations qui interagissent avec le monde extérieur à React (ex : API, timer, DOM).
-    // Ici, on fait du DOM pur : on observe les sections pour détecter laquelle est visible.
-    if (!onHome) return; // Si on n'est pas sur la home, on ne monte pas l'observer (pas de sections à observer).
-
-    const sections = document.querySelectorAll<HTMLElement>("section[id]");
-    if (sections.length === 0) return; // Si aucune section n'a d'id, on ne fait rien (sécurité pour éviter des erreurs plus bas).
-
-    //IntersectionObserver = API du navigateur qui permet de détecter quand un élément entre/sort d'une zone définie (ex: le viewport).
-    // callback de l'observer, appelée à chaque fois qu'une section entre/sort du viewport
-    // entries = liste des sections observées qui ont changé de visibilité (peuvent être plusieurs à la fois)
-    // entry.isIntersecting = true → la section est visible dans la zone définie par rootMargin
-    // Si une section devient visible, on met à jour active avec son id, ce qui met à jour le lien actif dans le header.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActive(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -50% 0px" }
-    ); //EO observer
-
-    // On dit à l'observer d'observer chaque section. À partir de là, il nous préviendra via la callback quand une section entrera/sortira de la zone définie par rootMargin.
-    sections.forEach((s) => observer.observe(s));
-    // Cleanup : déconnecte l'observer au démontage (sinon fuite mémoire).
-    return () => observer.disconnect();
-  }, [onHome]); // EO useEffect, onHome en dépendance parce que si on change de page, on doit arrêter d'observer les sections.
-
-  // Clic sur un lien : empêche le saut brutal, navigue smooth.
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault(); // Empêche le comportement par défaut du lien (saut brutal à l'ancre). On gère le scroll nous-mêmes pour pouvoir faire du smooth scrolling et fermer le menu mobile.
-    setMobileOpen(false);
-
-    // Si on n'est pas sur la home, on y va d'abord. Le useEffect de ScrollToTop
-    // se chargera ensuite de scroller vers l'ancre.
-    if (!onHome) {
-      navigate(`/#${id}`);
-      return;
-    }
-
-    const el = document.getElementById(id);
-    // scrollIntoView({ behavior: "smooth" }) = scroll jusqu'à l'élément de manière fluide au lieu de sauter brutalement.
-    el?.scrollIntoView({ behavior: "smooth" });
-    // Met à jour l'URL sans recharger la page (l'utilisateur peut copier le lien).
-    history.replaceState(null, "", `#${id}`);
-  };
+  const closeMobile = () => setMobileOpen(false);
 
   return (
     <header className="pill-header">
@@ -92,16 +118,28 @@ export default function Header() {
 
       <nav className={`pill-nav ${mobileOpen ? "open" : ""}`}>
         {/* map = méthode pour faire une boucle dans le JSX, cela va créer un lien pour chaque item de la liste navItems. */}
-        {navItems.map((item) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            onClick={(e) => handleClick(e, item.id)}
-            className={active === item.id ? "active" : ""}
-          >
-            {item.label}
-          </a>
-        ))}
+        {navItems.map((item) =>
+          // "children" in item = narrowing TypeScript : dans cette branche, TS sait que c'est un groupe.
+          "children" in item ? (
+            <NavDropdown
+              key={item.label}
+              label={item.label}
+              items={item.children}
+              onNavigate={closeMobile}
+            />
+          ) : (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              // end sur "/" : sans lui, "Accueil" serait actif partout (toutes les URLs commencent par "/").
+              end={item.to === "/"}
+              // On referme le menu mobile une fois la page choisie.
+              onClick={closeMobile}
+            >
+              {item.label}
+            </NavLink>
+          )
+        )}
       </nav>
     </header>
   );

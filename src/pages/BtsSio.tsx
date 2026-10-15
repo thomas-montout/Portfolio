@@ -1,16 +1,16 @@
 import { useSpotlight } from "../hooks/useSpotlight";
 import SectionTitle from "../components/SectionTitle";
 
-// Section Le BTS : deux cartes côte à côte (SLAM / SISR) qui passent en colonne sur mobile.
-// Le prop "id" (par défaut "bts") sert d'ancre pour le scroll depuis le header pill.
-export default function BtsSio({ id = "bts" }: { id?: string }) {
+// Page Le BTS SIO (route /bts) : deux cartes côte à côte (SLAM / SISR)
+// qui passent en colonne sur mobile.
+export default function BtsSio() {
   // Deux appels indépendants au hook : chacun a son propre ref.
   // Hooks appelés en haut du composant, pas de condition autour.
   const slam = useSpotlight();
   const sisr = useSpotlight();
 
   return (
-    <section id={id} className="bts_sio_section">
+    <section className="bts_sio_section">
       <div className="bts_sio_container">
         <SectionTitle>Le BTS SIO</SectionTitle>
         <p>

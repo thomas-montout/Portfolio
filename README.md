@@ -6,7 +6,7 @@ en alternance chez Ynov Campus. Le site présente le parcours, les compétences,
 les missions (E5), les projets (E6) et la veille technologique attendus pour la certification.
 
 Version 2.0 — refonte complète de l'ancien site statique HTML/CSS/JS en application
-React + TypeScript, single-page avec sections ancrées.
+React + TypeScript, multi-page : une route React Router par rubrique.
 
 ---
 
@@ -29,30 +29,39 @@ React + TypeScript, single-page avec sections ancrées.
 ```
 portfolio/
 ├─ index.html              Point d'entrée HTML (Vite injecte main.tsx dedans)
-├─ vite.config.ts          Plugins Vite : React + Tailwind v4
+├─ vite.config.ts          Plugins Vite : React + Tailwind v4, proxy /api/rss en dev
 ├─ tsconfig.json           Config TypeScript stricte
+├─ api/
+│  └─ rss.ts               Fonction serverless Vercel : relaie le flux RSS du Journal du Net
 ├─ public/                 Assets statiques servis tels quels (CV.pdf, favicon, etc.)
 └─ src/
    ├─ main.tsx             Bootstrap React + BrowserRouter
-   ├─ App.tsx              Routes : / et /missions/:slug
+   ├─ App.tsx              Routes : une par page (voir « Architecture »)
    ├─ index.css            Tokens @theme + CSS global
    ├─ components/          Briques réutilisables
-   │  ├─ Header.tsx        Pill nav avec IntersectionObserver pour le lien actif
+   │  ├─ Header.tsx        Pill nav (NavLink + menu déroulant Projets → E5 / E6)
    │  ├─ Footer.tsx
    │  ├─ Background.tsx    Dots + halo curseur
    │  ├─ BentoHero.tsx     Hero en grille asymétrique (grid-template-areas)
    │  ├─ FlipCard.tsx      Carte photo recto-verso
+   │  ├─ MissionCard.tsx   Carte projet compacte + grille partagée E5 / E6
+   │  ├─ RssFeed.tsx       Flux RSS en direct de la page Veille
+   │  ├─ Vignette.tsx      Miniature d'article (image du média, ou icône de remplacement)
+   │  ├─ ScrollUI.tsx      Barre de progression lumineuse + bouton retour en haut
    │  └─ ScrollToTop.tsx   Remonte la page à chaque navigation
-   ├─ pages/               Sections de la home + page détail
-   │  ├─ Home.tsx          Compose toutes les sections en single-page
-   │  ├─ BtsSio.tsx        Présentation du diplôme (SLAM vs SISR)
-   │  ├─ Competence.tsx    Stack technique
-   │  ├─ EcoleAlternance.tsx Ynov + Coface
-   │  ├─ MissionsE5.tsx    Liste des missions E5
-   │  ├─ MissionDetail.tsx Case study d'une mission (route dynamique :slug)
+   ├─ pages/               Une page par route
+   │  ├─ Home.tsx          Accueil : hero bento seul
+   │  ├─ Parcours.tsx      Présentation + parcours, compose EcoleAlternance et BtsSio
+   │  ├─ BtsSio.tsx        Section du diplôme (SLAM vs SISR), dans Parcours
+   │  ├─ EcoleAlternance.tsx Section Ynov + Coface, dans Parcours
+   │  ├─ Competence.tsx    Stack technique (pastilles par catégorie)
+   │  ├─ MissionsE5.tsx    Projets E5 en onglets (/e5)
+   │  ├─ MissionsE6.tsx    Projets E6 (/e6)
+   │  ├─ VeilleTechnologique.tsx Veille + flux RSS
    │  └─ Contact.tsx       Formulaire de contact
    ├─ data/
-   │  └─ missions.ts       Source de vérité des missions (titre, slug, techs, etc.)
+   │  ├─ missions.ts       Source de vérité des missions (titre, slug, techs, etc.)
+   │  └─ veille.ts         Fiches de veille (ordre chronologique), outils et sources
    └─ hooks/
       └─ useSpotlight.ts   Hook custom pour le halo lumineux au hover
 ```
@@ -61,24 +70,53 @@ portfolio/
 
 ## Architecture et choix techniques
 
-### 1. Single-page avec ancres
+### 1. Une page par rubrique
 
-La home rend toutes les sections à la suite (`<BentoHero />`, `<BtsSio />`,
-`<Competence />`, etc.). Chaque section a un `id` (`#hero`, `#bts`, `#competences`...).
-Le header pill utilise un `IntersectionObserver` pour détecter la section visible
-et mettre en surbrillance le lien correspondant.
+| Route                   | Page                                           |
+| ----------------------- | ---------------------------------------------- |
+| `/`                     | `Home.tsx` (hero bento)                        |
+| `/parcours`             | `Parcours.tsx` (+ `EcoleAlternance`, `BtsSio`) |
+| `/competence`           | `Competence.tsx`                               |
+| `/e5`                   | `MissionsE5.tsx`                               |
+| `/e6`                   | `MissionsE6.tsx`                               |
+| `/veille-technologique` | `VeilleTechnologique.tsx`                      |
+| `/contact`              | `Contact.tsx`                                  |
 
-Conséquence : un seul layout, navigation fluide, partage d'URL avec ancre possible
-(ex. `/#missions`). Les anciennes routes (`/bts-sio`, `/competence`, etc.) sont
-redirigées vers `/` via la route fallback `path="*"` dans `App.tsx`.
+Le header pill liste ces pages avec des `NavLink` : React Router pose la classe
+`active` sur le lien de la page courante (`end` sur `/` pour que « Accueil » ne
+reste pas allumé partout). E5 et E6 sont regroupés dans un menu déroulant
+« Projets » (survol à la souris, clic au tactile, toujours déplié dans le menu
+burger). `ScrollToTop` remonte en haut à chaque changement de page, ou scrolle
+jusqu'à l'ancre (`/parcours#bts`). Toute URL inconnue est redirigée vers `/` via
+la route `path="*"`.
 
-### 2. Page détail mission (case study)
+La barre de progression lumineuse (`ScrollUI.tsx`) balaie aussi l'écran à chaque
+changement de page, pour rester visible sur les pages trop courtes pour scroller.
+Le body est un « sticky footer » : sur une page courte, le footer reste en bas.
 
-La seule route distincte est `/missions/:slug` (`src/pages/MissionDetail.tsx`).
-Elle lit le paramètre `slug` via `useParams` et récupère la mission correspondante
-dans `src/data/missions.ts` (source de vérité unique, sans duplication).
+### 2. Projets E5 en onglets
 
-### 3. Tailwind CSS v4 en mode hybride
+`/e5` affiche une catégorie à la fois (Formation / Entreprise / Personnel).
+L'onglet actif vit dans l'URL (`/e5?categorie=personnel`, via `useSearchParams`) :
+le lien est partageable et le retour arrière revient sur le bon onglet. L'onglet
+Formation regroupe les projets par bloc du référentiel BTS SIO. Les missions
+viennent de `src/data/missions.ts` (source de vérité unique, sans duplication).
+
+### 3. Veille : flux RSS en direct
+
+Le bloc « Flux RSS en direct » (`RssFeed.tsx`) lit le flux « Développeur » du
+Journal du Net à chaque visite, puis toutes les 10 minutes, et le parse avec
+`DOMParser`. La page n'appelle pas le JDN directement, car il n'envoie pas
+d'en-tête CORS et bloque les requêtes sans User-Agent de navigateur. Elle appelle
+`/api/rss` :
+
+- **en production** : fonction serverless `api/rss.ts`, qui récupère le flux côté
+  serveur avec un User-Agent explicite et le met en cache 10 minutes sur le CDN Vercel ;
+- **en dev** : proxy Vite déclaré dans `vite.config.ts`, sur la même URL.
+
+Les fiches de veille vivent dans `src/data/veille.ts`, dans l'ordre chronologique.
+
+### 4. Tailwind CSS v4 en mode hybride
 
 Tailwind v4 est installé via `@tailwindcss/vite`, mais utilisé **principalement
 comme moteur de tokens**, pas comme système d'utilitaires.
@@ -94,7 +132,7 @@ comme moteur de tokens**, pas comme système d'utilitaires.
 Ce choix garde le JSX lisible et concentre le style complexe (animations, pseudo-éléments,
 `grid-template-areas`) dans un seul fichier CSS facile à parcourir.
 
-### 4. Background décoratif sans état React
+### 5. Background décoratif sans état React
 
 Le composant `Background.tsx` superpose deux couches : une grille de dots en
 `radial-gradient` répété, et un halo qui suit le curseur. Le halo est positionné
@@ -115,17 +153,16 @@ La v1 du portfolio était un site statique : trois fichiers (`index.html`,
 La v2 conserve **l'identité visuelle** (palette bordeaux/crème, fonte Josefin Sans,
 classes BEM portées tel quel) mais réécrit toute la base :
 
-- **HTML statique multi-pages → React SPA single-page** : moins de duplication
+- **HTML statique multi-pages → React SPA (React Router)** : moins de duplication
   (header/footer/background définis une seule fois dans `App.tsx`).
 - **Vanilla JS → composants React** : chaque section devient un composant typé
   TypeScript, réutilisable.
 - **Données en dur dans le HTML → module `data/missions.ts`** : les missions sont
-  définies une fois, consommées par la liste (`MissionsE5`) **et** par la page
-  détail (`MissionDetail`). Ajouter une mission = ajouter une entrée dans le
-  tableau.
+  définies une fois, consommées par les pages `MissionsE5` **et** `MissionsE6`.
+  Ajouter une mission = ajouter une entrée dans le tableau.
 - **CSS recompilé manuellement → Vite + Tailwind v4** : hot-reload en dev,
   bundling et minification automatiques en build.
-- **Navigation par liens classiques → React Router** + scroll par ancres.
+- **Navigation par liens classiques → React Router** : changement de page sans rechargement.
 
 Le CSS de la v1 a été conservé dans `index.css` en BEM, avec quelques sections
 réorganisées (commentaires `========== SECTION ==========` pour repérer chaque
@@ -187,10 +224,10 @@ fichier `vercel.json` :
 
 ### Point d'attention : React Router et le rewrite SPA
 
-Cette application utilise des routes côté client (`/missions/:slug`). Sans
+Cette application utilise des routes côté client (`/e5`, `/e6`...). Sans
 configuration de rewrite, un visiteur qui rafraîchit la page sur
-`https://ton-site.vercel.app/missions/coface` reçoit un 404 — Vercel cherche un
-fichier `missions/coface.html` qui n'existe pas.
+`https://ton-site.vercel.app/e5` reçoit un 404 — Vercel cherche un
+fichier `e5.html` qui n'existe pas.
 
 Vercel applique heureusement un rewrite par défaut pour les projets Vite,
 mais si jamais le problème apparaît, ajouter à la racine un fichier
