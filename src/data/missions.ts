@@ -1,6 +1,5 @@
 // Source unique des missions affichées sur le portfolio.
-// Importé par la section Missions sur Home (MissionsE5) ET par la page liste
-// /missions/categorie/:category (MissionsList).
+// Importé par les pages dédiées /e5 (MissionsE5) et /e6 (MissionsE6).
 //
 // NOTION : "Single source of truth" — une donnée n'est définie qu'à UN seul endroit.
 // Tout changement se répercute partout.
@@ -10,7 +9,7 @@
 // 1) FORMATION → sous-groupes par bloc BTS SIO : Support, Cyber, SLAM
 // 2) ENTREPRISE
 // 3) PERSONNEL (les missions taggées `epreuve: "E6"` apparaissent aussi
-//    dans la liste E6 sur la home, sans duplication d'entrée).
+//    sur la page /e6, sans duplication d'entrée).
 //
 // CONVENTION DE TITRE : « <Type> — <Nom> », pour que toutes les cartes
 // affichent la même forme visuelle. Types utilisés :
@@ -32,7 +31,7 @@ export type TechIcon = {
 export type MissionCategory = "formation" | "entreprise" | "personnel"; // "|" = union type, permet de restreindre les valeurs possibles.
 
 // Blocs BTS SIO (référentiel pédagogique). Utilisés uniquement pour les missions
-// de catégorie "formation" sur la page liste /missions/categorie/formation.
+// de catégorie "formation", dans l'onglet Formation de la page /e5.
 // "support" = Support et mise à disposition de services informatiques.
 // "cyber"   = Cybersécurité des services informatiques.
 // "slam"    = Solution logiciel et application métier (l'option du BTS).
@@ -270,7 +269,7 @@ export const missions: Mission[] = [
   // ════════════════════════════════════════════════════════════════════
   // PERSONNEL
   // (absolute-stream est aussi taggé epreuve: "E6" → apparaît dans la
-  //  liste "Projets E6" de la home en plus de la section personnelle.)
+  //  page /e6 en plus de la section personnelle de /e5.)
   // ════════════════════════════════════════════════════════════════════
   {
     slug: "portfolio",

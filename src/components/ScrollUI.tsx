@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
-// Composant qui combine 2 features liées au scroll :
+// Composant qui combine 3 features liées au scroll / à la navigation :
 //   1. Une barre fine en haut de page qui montre la progression du scroll.
-//   2. Un bouton flottant "retour en haut" qui apparaît après 400px scrollés.
+//   2. Un balayage lumineux de cette barre à chaque changement de page : les pages
+//      courtes n'ont presque rien à scroller, la barre resterait sinon invisible.
+//   3. Un bouton flottant "retour en haut" qui apparaît après 400px scrollés.
 //
 // On gère les deux dans un seul composant pour mutualiser l'écouteur scroll
 // (un seul handler au lieu de deux → plus performant).
@@ -11,6 +14,7 @@ export default function ScrollUI() {
   const [progress, setProgress] = useState(0);
   // visible = bouton back-to-top apparaît si true
   const [visible, setVisible] = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     let frame = 0;
@@ -51,6 +55,9 @@ export default function ScrollUI() {
     <>
       {/* Barre de progression : div fine fixée en haut, width = progression */}
       <div className="scroll-progress" style={{ width: `${progress}%` }} aria-hidden="true" />
+      {/* Balayage : key={pathname} = React recrée la div à chaque nouvelle page,
+          ce qui relance l'animation CSS depuis le début. Pas besoin de state ni de timer. */}
+      <div key={pathname} className="route-sweep" aria-hidden="true" />
 
       {/* Bouton retour en haut : visible/masqué via classe CSS pour bénéficier des transitions */}
       <button

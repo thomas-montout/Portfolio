@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import FlipCard from "./FlipCard";
 
 // Hero version "bento grid" : grille asymétrique où chaque cellule
@@ -23,31 +24,30 @@ export default function BentoHero({ id = "hero" }: { id?: string }) {
         />
       </div>
 
-      {/* Cellule 2 : BTS SIO — clic = scroll vers #bts.
-          On utilise <a href="#id"> et pas <Link to="#id"> : avec scroll-behavior: smooth
-          en CSS global, l'ancre HTML native scroll fluide sans React Router. */}
-      <a href="#bts" className="bento__cell bento__bts bento__cell--link">
+      {/* Cellule 2 : BTS SIO — clic = page /bts.
+          <Link> et pas <a href> : React Router change de page sans recharger le site. */}
+      <Link to="/bts" className="bento__cell bento__bts bento__cell--link">
         <span className="bento__icon">
           <i className="fa-solid fa-graduation-cap" />
         </span>
         <span className="bento__label">Formation</span>
         <h3>BTS SIO SLAM</h3>
         <p>Ynov Campus</p>
-      </a>
+      </Link>
 
-      {/* Cellule 3 : Alternance Coface — clic = scroll vers #ecole */}
-      <a href="#ecole" className="bento__cell bento__coface bento__cell--link">
+      {/* Cellule 3 : Alternance Coface — clic = page /alternance (école et alternance) */}
+      <Link to="/alternance" className="bento__cell bento__coface bento__cell--link">
         <span className="bento__icon">
           <i className="fa-solid fa-briefcase" />
         </span>
         <span className="bento__label">Alternance</span>
         <h3>Coface</h3>
         <p>Application Support</p>
-      </a>
+      </Link>
 
-      {/* Cellule 4 : Stack technique — clic = scroll vers #competences.
+      {/* Cellule 4 : Stack technique — clic = page /competence.
           Liste plate, flex-wrap centrée. La vraie pyramide est dans la page Compétences. */}
-      <a href="#competences" className="bento__cell bento__stack bento__cell--link">
+      <Link to="/competence" className="bento__cell bento__stack bento__cell--link">
         <span className="bento__label">Ma stack</span>
         <div className="bento__stack-icons">
           <i className="devicon-typescript-plain colored" title="TypeScript" />
@@ -60,7 +60,7 @@ export default function BentoHero({ id = "hero" }: { id?: string }) {
           <i className="devicon-html5-plain colored" title="HTML5" />
           <i className="devicon-css3-plain colored" title="CSS3" />
         </div>
-      </a>
+      </Link>
 
       {/* Cellule 5 : Présentation + CTA.
           Nom et tagline séparés pour une vraie hiérarchie typo (avant : un seul <h1> avec <strong> inline qui rendait bizarre). */}
@@ -71,10 +71,10 @@ export default function BentoHero({ id = "hero" }: { id?: string }) {
           Étudiant en BTS SIO, j'étudie le développement de{" "}
           <strong>solutions logicielles et d'applications métiers</strong>.
         </p>
-        {/* CTA réparé : ancien lien pointait vers un chemin de fichier source (.tsx) qui n'est pas une route. */}
-        <a href="#missions" className="bento__cta">
+        {/* CTA vers la page dédiée E5 (les projets ne sont plus une section de la home). */}
+        <Link to="/e5" className="bento__cta">
           Voir mes projets <i className="fa-solid fa-arrow-right" />
-        </a>
+        </Link>
       </div>
 
       {/* Cellule 6 : Réseaux */}

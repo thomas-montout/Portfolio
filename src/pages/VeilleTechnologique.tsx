@@ -1,36 +1,13 @@
-import { useEffect, useState } from "react";
 import { useSpotlight } from "../hooks/useSpotlight";
 import SectionTitle from "../components/SectionTitle";
-import {
-  type Article,
-  articlesALaUne,
-  articlesParAxe,
-  axes,
-  outils,
-  sources,
-} from "../data/veille";
+import RssFeed from "../components/RssFeed";
+import Vignette from "../components/Vignette";
+import { type Article, type Categorie, articles, outils, sources } from "../data/veille";
 
-// Section Veille technologique (ancre #veille, entre Missions et Contact sur la home).
-// Ordre de lecture : le sujet → mes outils et sources → le flux en direct →
-// « À la une » (les 2 articles les plus récents) → mes analyses, rangées par axe.
+// Page Veille technologique (route /veille-technologique).
+// Ordre de lecture : le sujet → le flux RSS en direct (preuve que la veille est automatisée)
+// → mes articles analysés, dans l'ordre chronologique → mes outils et sources.
 // Toutes les données viennent de data/veille.ts : ce fichier ne fait que de l'affichage.
-
-// ─── Widget RSS.app ───
-// C'est un "Web Component" : le script de RSS.app apprend au navigateur une nouvelle
-// balise, <rssapp-carousel>, qui se remplit toute seule avec les articles du flux.
-const RSS_APP_SCRIPT = "https://widget.rss.app/v1/carousel.js";
-const RSS_APP_WIDGET_ID = "_PQBxJNfAb8L5PRoX"; // identifiant de mon flux, fourni par RSS.app
-
-// TypeScript connaît les balises HTML standard, mais pas <rssapp-carousel>.
-// On l'ajoute à la liste des balises JSX autorisées (IntrinsicElements),
-// avec les mêmes attributs qu'un élément HTML classique (id, className…).
-declare module "react" {
-  namespace JSX {
-    interface IntrinsicElements {
-      "rssapp-carousel": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-    }
-  }
-}
 
 // "2026-09-29" → "29 septembre 2026".
 // timeZone "UTC" : une date ISO sans heure est lue comme minuit UTC. Sans cette option,
@@ -43,95 +20,133 @@ const formatDate = (iso: string) =>
     timeZone: "UTC",
   });
 
-// Une fiche article. Sous-composant pour appeler useSpotlight une fois PAR carte
-// (un hook ne s'appelle pas dans un .map()).
+// Icône affichée à la place de la vignette si l'image de l'article ne se charge pas.
+// Record<Categorie, string> : TS vérifie qu'aucune catégorie n'est oubliée.
+const iconesCategorie: Record<Categorie, string> = {
+  ARCHITECTURE: "fa-solid fa-sitemap",
+  TECHNIQUE: "fa-solid fa-code",
+  STANDARD: "fa-solid fa-plug",
+  SÉCURITÉ: "fa-solid fa-shield-halved",
+  GOUVERNANCE: "fa-solid fa-scale-balanced",
+};
+
+// Une fiche article : la vignette à gauche (au-dessus en mobile), puis toujours dans le même
+// ordre : média + date (et catégorie à droite), titre, résumé, un trait,
+// « Pourquoi c'est important », puis le lien vers l'article d'origine.
+// Sous-composant pour appeler useSpotlight une fois PAR carte (un hook ne s'appelle pas dans un .map()).
 // <article> plutôt que <div> : balise sémantique pour un contenu autonome.
-// showAxe : affiche le badge de l'axe, utile seulement dans « À la une ».
-function VeilleCard({ article, showAxe = false }: { article: Article; showAxe?: boolean }) {
+function VeilleCard({ article }: { article: Article }) {
   const { ref, onMouseMove } = useSpotlight<HTMLElement>();
-  // Passe à true si l'image ne se charge pas (lien cassé, site du média en panne…).
-  const [imageEnErreur, setImageEnErreur] = useState(false);
-  // find() renvoie le premier axe dont la clé correspond (ou undefined).
-  const axe = axes.find((x) => x.key === article.axe);
 
   return (
-    <article ref={ref} onMouseMove={onMouseMove} className="veille-card spotlight">
-      {/* L'image de l'article si elle existe et se charge, sinon un visuel avec l'icône de l'axe.
-          alt="" : image décorative, le titre juste en dessous dit déjà de quoi parle la fiche.
-          loading="lazy" : le navigateur ne la télécharge qu'à l'approche de la carte. */}
-      {article.image && !imageEnErreur ? (
-        <img
-          src={article.image}
-          alt=""
-          loading="lazy"
-          onError={() => setImageEnErreur(true)}
-          className="veille-card__img"
-        />
-      ) : (
-        <div className="veille-card__img veille-card__img--placeholder" aria-hidden="true">
-          <i className={axe?.icon} />
-        </div>
-      )}
+    <article
+      ref={ref}
+      onMouseMove={onMouseMove}
+      className={`veille-card spotlight ${article.aLaUne ? "veille-card--une" : ""}`}
+    >
+      {/* La vignette mène aussi à l'article. tabIndex={-1} + aria-hidden : le clavier et les
+          lecteurs d'écran passent directement au lien « Lire l'article », sans doublon. */}
+      <a
+        href={article.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="veille-card__thumb"
+        tabIndex={-1}
+        aria-hidden="true"
+      >
+        <Vignette src={article.image} icon={iconesCategorie[article.categorie]} />
+      </a>
 
       <div className="veille-card__body">
-        <div className="veille-card__meta">
+        <div className="veille-card__head">
           <span className="veille-card__source">{article.source}</span>
           {/* <time dateTime> : date lisible par les machines, texte lisible par les humains */}
-          <time dateTime={article.date}>{formatDate(article.date)}</time>
-          {showAxe && axe && <span className="veille-card__axe">{axe.label}</span>}
+          <time dateTime={article.date} className="veille-card__date">
+            {formatDate(article.date)}
+          </time>
+          {/* Groupe poussé tout à droite de la ligne (margin-left: auto dans le CSS). */}
+          <span className="veille-card__tags">
+            {article.aLaUne && <span className="veille-card__badge">À la une</span>}
+            <span className="veille-card__categorie">{article.categorie}</span>
+          </span>
         </div>
-        <h4 className="veille-card__title">{article.title}</h4>
+
+        <h4 className="veille-card__title">{article.titre}</h4>
         <p className="veille-card__resume">{article.resume}</p>
         <p className="veille-card__why">
           <strong>Pourquoi c'est important :</strong> {article.pourquoi}
         </p>
-        <a
-          href={article.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="veille-card__link"
-        >
-          Lire l'article <i className="fa-solid fa-arrow-up-right-from-square" />
-        </a>
+
+        <div className="veille-card__footer">
+          {/* title = infobulle au survol : le titre d'origine reste consultable (traçabilité)
+            sans alourdir la fiche. */}
+          <a
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="veille-card__link"
+            title={article.titreOriginal}
+          >
+            Lire l'article <i className="fa-solid fa-arrow-up-right-from-square" />
+          </a>
+          {article.voirAussi && (
+            <a
+              href={article.voirAussi.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="veille-card__see-also"
+            >
+              Voir aussi : {article.voirAussi.titre} ({article.voirAussi.source})
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );
 }
 
-export default function VeilleTechnologique({ id = "veille" }: { id?: string }) {
-  // Charge le script RSS.app une seule fois.
-  // Pourquoi pas un <script> dans le JSX ? React 18 l'insère dans la page sans l'exécuter.
-  useEffect(() => {
-    // Déjà présent (retour sur la home, ou double montage du StrictMode en dev) → on s'arrête :
-    // une balise personnalisée ne peut être déclarée qu'une seule fois.
-    if (document.querySelector(`script[src="${RSS_APP_SCRIPT}"]`)) return;
-    const script = document.createElement("script");
-    script.src = RSS_APP_SCRIPT;
-    script.async = true; // téléchargé en arrière-plan, ne bloque pas l'affichage
-    document.body.appendChild(script);
-    // Pas de cleanup : retirer la balise <script> n'annulerait pas le code déjà exécuté.
-  }, []);
-
+export default function VeilleTechnologique() {
   return (
-    <section id={id} className="veille_technologique_section">
+    <section className="veille_technologique_section">
       <div className="veille_technologique_container">
         <SectionTitle>Veille technologique</SectionTitle>
 
         {/* 1. Le sujet */}
         <p className="veille-sujet">
-          Comment les entreprises intègrent-elles les LLM dans leurs logiciels&nbsp;?
+          Du RAG aux agents IA autonomes : comment sécuriser des IA qui agissent sur le système
+          d'information de l'entreprise&nbsp;?
         </p>
         <p className="veille-intro">
-          Les LLM (grands modèles de langage, comme ceux derrière ChatGPT ou Le Chat de Mistral)
-          sortent des fenêtres de discussion : les éditeurs les intègrent directement dans leurs
-          logiciels. Je suis comment ils s'y prennent, et avec quelles précautions.
+          Le RAG (Retrieval-Augmented Generation) permet à une IA de répondre à partir des documents
+          de l'entreprise. En un an, ces systèmes sont passés de la simple recherche de documents à
+          des agents qui appellent des API et exécutent du code. Je suis cette évolution, et les
+          solutions qui apparaissent pour les encadrer.
         </p>
 
-        {/* 2. Outils et sources */}
+        {/* 2. Le flux en direct : indépendant des fiches, il prouve que la veille tourne seule. */}
+        <RssFeed />
+
+        {/* 3. Les fiches, dans l'ordre chronologique */}
+        <h3 className="subsection_title">
+          <span>Le fil de ma veille : {articles.length} articles analysés</span>
+        </h3>
+        <p className="veille-intro">
+          Du RAG « naïf » qui se contente de chercher, jusqu'aux agents isolés par le système
+          d'exploitation : les étapes clés, de la plus ancienne à la plus récente.
+        </p>
+        <ol className="veille-timeline">
+          {articles.map((a) => (
+            <li key={a.url} className={a.aLaUne ? "is-une" : ""}>
+              <VeilleCard article={a} />
+            </li>
+          ))}
+        </ol>
+
+        {/* 4. Outils et sources */}
         <h3 className="subsection_title">
           <span>Mes outils et mes sources</span>
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
           <div className="mini-card">
             <h4>
               <i className="fa-solid fa-toolbox" /> Outils
@@ -159,45 +174,6 @@ export default function VeilleTechnologique({ id = "veille" }: { id?: string }) 
             </ul>
           </div>
         </div>
-
-        {/* 3. Le flux en direct */}
-        <h3 className="subsection_title">
-          <span>Le flux en direct</span>
-        </h3>
-        <p className="veille-intro">
-          Les derniers articles de mes sources, mis à jour automatiquement.
-        </p>
-        <div className="veille-feed">
-          <rssapp-carousel id={RSS_APP_WIDGET_ID} />
-        </div>
-
-        {/* 4. À la une */}
-        <h3 className="subsection_title">
-          <span>À la une</span>
-        </h3>
-        <p className="veille-intro">Les deux articles les plus récents de ma veille.</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-          {articlesALaUne.map((a) => (
-            <VeilleCard key={a.url} article={a} showAxe />
-          ))}
-        </div>
-
-        {/* 5. Mes analyses, par axe */}
-        {axes.map((axe, i) => (
-          <div key={axe.key}>
-            <h3 className="subsection_title">
-              <span>
-                Axe {i + 1} · {axe.title}
-              </span>
-            </h3>
-            <p className="veille-intro">{axe.description}</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-              {articlesParAxe(axe.key).map((a) => (
-                <VeilleCard key={a.url} article={a} />
-              ))}
-            </div>
-          </div>
-        ))}
       </div>
     </section>
   );

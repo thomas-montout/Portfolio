@@ -1,18 +1,18 @@
 import { useSpotlight } from "../hooks/useSpotlight";
 import SectionTitle from "../components/SectionTitle";
 
-// Page École & Alternance.
+// Page École & Alternance (route /alternance).
 // À RETENIR pour le JSX :
 // - Les attributs HTML deviennent camelCase : autoplay → autoPlay, playsinline → playsInline.
 // - "class" est un mot-clé JS → en JSX on écrit "className".
 // - Les booléens d'attribut HTML (autoplay="autoplay") sont juste écrits sans valeur en JSX.
-export default function EcoleAlternance({ id = "ecole" }: { id?: string }) {
+export default function EcoleAlternance() {
   // Un hook par carte : chacune a son propre halo lumineux qui suit le curseur.
   const ynov = useSpotlight();
   const coface = useSpotlight();
 
   return (
-    <section id={id} className="ecole_alternance_section">
+    <section className="ecole_alternance_section">
       <div className="ecole_alternance_container">
         <SectionTitle>École et Alternance</SectionTitle>
         <p>Mon parcours de formation et mon expérience professionnelle</p>
@@ -66,15 +66,16 @@ export default function EcoleAlternance({ id = "ecole" }: { id?: string }) {
               <strong>Poste :</strong> Alternant support applicatif
             </p>
 
-            <div className="grid grid-cols-1 gap-3 mt-4">
+            {/* Contexte / Traitement / Suivi côte à côte en grand écran. */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mt-4">
               <div className="mini-card">
                 <h4>Contexte</h4>
                 <p>
                   Leader mondial de l'assurance-crédit présent dans 100 pays, Coface sécurise les
-                  échanges commerciaux des entreprises en les protégeant contre le risque
-                  d'impayés. Au sein du pôle Global Service Desk, mon rôle est de garantir aux
-                  collaborateurs un accès sécurisé aux applications métiers du groupe tout en
-                  pilotant la gouvernance des identités numériques des utilisateurs.
+                  échanges commerciaux des entreprises en les protégeant contre le risque d'impayés.
+                  Au sein du pôle Global Service Desk, mon rôle est de garantir aux collaborateurs
+                  un accès sécurisé aux applications métiers du groupe tout en pilotant la
+                  gouvernance des identités numériques des utilisateurs.
                 </p>
               </div>
 
