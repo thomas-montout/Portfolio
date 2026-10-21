@@ -16,7 +16,7 @@
 //   - "Atelier" pour les ateliers de formation (support + SLAM ateliers)
 //   - "Labo"    pour les labs cybersécurité
 //   - "TP"      pour les travaux pratiques (MySQL, PHP)
-//   - "Projet"  pour les projets entreprise et personnels
+//   - "Projet"  pour les projets (formation en équipe, entreprise, personnels)
 //
 // Cet ordre et ces conventions n'ont PAS d'incidence fonctionnelle (les
 // pages re-filtrent via missionsByCategory / missionsByBlock) — c'est de
@@ -184,6 +184,25 @@ export const missions: Mission[] = [
   // },
 
   // ─── Solution Logiciel et Application Métier (SLAM) ───
+  {
+    slug: "e-enseignement",
+    title: "Projet — E-enseignement",
+    description:
+      "Site pédagogique et vitrine du groupe, réalisé en équipe de quatre : cours et exercices corrigés en algo, C, Java, JavaScript et PHP.",
+    image: "/img/photos/minia-e-enseignement.png",
+    techs: [
+      { label: "HTML", icon: "devicon-html5-plain colored" },
+      { label: "CSS", icon: "devicon-css3-plain colored" },
+      { label: "JavaScript", icon: "devicon-javascript-plain colored" },
+      { label: "Docker", icon: "devicon-docker-plain colored" },
+    ],
+    links: [
+      { label: "Live", href: "https://thomas-montout.github.io/E-enseignement/" },
+      { label: "Github", href: "https://github.com/thomas-montout/E-enseignement" },
+    ],
+    category: "formation",
+    block: "slam",
+  },
   {
     slug: "symfony-biblios",
     title: "Atelier — Symfony Biblios",
@@ -400,6 +419,7 @@ export const missions: Mission[] = [
       { label: "PostgreSQL", icon: "devicon-postgresql-plain colored" },
     ],
     links: [
+      { label: "Live", href: "https://v-room-beta.vercel.app/" },
       { label: "Github", href: "https://github.com/thomas-montout/V.ROOM" },
       { label: "Documentation", href: "/pdf/doc-vroom.pdf" },
     ],
@@ -451,6 +471,21 @@ export const missions: Mission[] = [
       { label: "Live", href: "https://tempo-ten-psi.vercel.app/" },
       { label: "Github", href: "https://github.com/thomas-montout/tempo" },
     ],
+    category: "personnel",
+  },
+  {
+    slug: "iso-stock",
+    title: "Projet — ISO Stock",
+    description:
+      "Application de bureau pour une entreprise de lavage de vitres : savoir quel matériel se trouve dans quel véhicule de la flotte.",
+    image: "/img/photos/minia-iso-stock.png",
+    techs: [
+      { label: "Java", icon: "devicon-java-plain colored" },
+      { label: "SQLite", icon: "devicon-sqlite-plain colored" },
+      { label: "Maven", icon: "devicon-maven-plain colored" },
+      { label: "JUnit", icon: "devicon-junit-plain colored" },
+    ],
+    links: [{ label: "Github", href: "https://github.com/thomas-montout/parc-vehicules" }],
     category: "personnel",
   },
 ];

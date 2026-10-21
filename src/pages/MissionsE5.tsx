@@ -24,11 +24,12 @@ const tabs: { key: MissionCategory; label: string }[] = [
   { key: "personnel", label: "Personnel" },
 ];
 
-// Blocs BTS SIO affichés dans l'onglet formation, dans l'ordre du référentiel.
+// Blocs BTS SIO affichés dans l'onglet formation : SLAM (l'option du BTS) en premier,
+// support en dernier.
 const formationBlocks: { key: MissionBlock; title: string }[] = [
-  { key: "support", title: "Support et mise à disposition de services informatiques" },
-  { key: "cyber", title: "Cybersécurité des services informatiques" },
   { key: "slam", title: "Solution Logiciel et Application Métier" },
+  { key: "cyber", title: "Cybersécurité des services informatiques" },
+  { key: "support", title: "Support et mise à disposition de services informatiques" },
 ];
 
 export default function MissionsE5() {
