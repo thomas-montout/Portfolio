@@ -24,7 +24,7 @@
 
 export type TechIcon = {
   label: string;
-  icon?: string; // classe Devicon, ex: "devicon-react-plain colored"
+  icon?: string; // classe Devicon ou Font Awesome, ex: "devicon-react-plain colored"
   customIcon?: string; // ou chemin d'image custom
 };
 
@@ -249,6 +249,65 @@ export const missions: Mission[] = [
   // ════════════════════════════════════════════════════════════════════
   // ENTREPRISE
   // ════════════════════════════════════════════════════════════════════
+  {
+    slug: "request-tool",
+    title: "Projet — Request Tool",
+    description:
+      "Remplacer le template Excel de demandes d'accès IAM par un outil dédié : étude, conception du workflow, tests UAT et déploiement en production.",
+    image: "/img/photos/minia-request-tool.png",
+    techs: [
+      { label: "Request Tool", customIcon: "/img/icons/logo-request-tool.svg" },
+      { label: "Excel", icon: "fa-solid fa-file-excel" },
+    ],
+    links: [],
+    category: "entreprise",
+  },
+  {
+    slug: "broker-portal",
+    title: "Projet — Comptes Broker Portal",
+    description:
+      "Accélérer la création des comptes Broker Portal en adaptant les requêtes SQL qui récupèrent les données de référence.",
+    image: "/img/photos/minia-broker-portal.png",
+    techs: [
+      { label: "SQL Developer", icon: "devicon-sqldeveloper-plain colored" },
+      { label: "FileZilla", icon: "devicon-filezilla-plain colored" },
+    ],
+    links: [],
+    category: "entreprise",
+  },
+  {
+    slug: "habilitations-iam",
+    title: "Projet — Habilitations IAM",
+    description:
+      "Contrôler et attribuer les droits d'accès (arrivées, mutations, départs) selon les règles IAM, les approbations et les niveaux de délégation.",
+    image: "/img/photos/minia-habilitations-iam.png",
+    techs: [
+      { label: "Excel", icon: "fa-solid fa-file-excel" },
+      { label: "Confluence", icon: "devicon-confluence-plain colored" },
+    ],
+    links: [],
+    category: "entreprise",
+  },
+  {
+    slug: "template-iam",
+    title: "Projet — Template IAM",
+    description:
+      "Faire évoluer le template Excel de demandes d'accès : nouveaux formulaires, formules, validations de données et listes déroulantes.",
+    image: "/img/photos/minia-template-iam.png",
+    techs: [{ label: "Excel", icon: "fa-solid fa-file-excel" }],
+    links: [],
+    category: "entreprise",
+  },
+  {
+    slug: "transfert-iam",
+    title: "Projet — Transfert d'activité IAM",
+    description:
+      "Assurer la continuité de service pendant le transfert de l'activité IAM vers un prestataire : procédures, guides et accompagnement.",
+    image: "/img/photos/minia-transfert-iam.png",
+    techs: [{ label: "Confluence", icon: "devicon-confluence-plain colored" }],
+    links: [],
+    category: "entreprise",
+  },
   {
     slug: "bot-iam",
     title: "Projet — Bot IAM",
