@@ -15,21 +15,17 @@ const navItems: NavItem[] = [
       { to: "/parcours", label: "Mon parcours" },
       { to: "/alternance", label: "École & alternance" },
       { to: "/bts", label: "BTS SIO" },
+      { to: "/identite-numerique", label: "Identité numérique" },
     ],
   },
   { to: "/competence", label: "Compétences" },
-  {
-    label: "Projets",
-    children: [
-      { to: "/e5", label: "Projets E5" },
-      { to: "/e6", label: "Projets E6" },
-    ],
-  },
+  { to: "/e5", label: "Projets E5" },
+  { to: "/e6", label: "Projets E6" },
   { to: "/veille-technologique", label: "Veille" },
   { to: "/contact", label: "Contact" },
 ];
 
-// Menu déroulant d'un groupe de liens (ex : Projets → E5 / E6).
+// Menu déroulant d'un groupe de liens (ex : Parcours → Mon parcours / BTS SIO…).
 // - Souris : s'ouvre au survol. Tactile / clavier : s'ouvre au clic sur le bouton.
 // - Se referme au clic en dehors, sur Échap, ou quand on choisit une page.
 // - En mobile (menu burger), le CSS l'affiche toujours déplié : le bouton devient un simple intitulé.

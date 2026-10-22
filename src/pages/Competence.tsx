@@ -113,15 +113,6 @@ export default function Competence() {
           <SkillGroup title="Frameworks & technologies" skills={frameworks} />
           <SkillGroup title="Logiciels & outils" skills={outils} />
         </div>
-
-        {/* Bouton téléchargement du tableau de synthèse SLAM (Excel).
-            Réutilise les classes .cv-download / .btn-cv déjà stylées. */}
-        <div className="cv-download">
-          <a href="/excel/tableau-de-synthese.xlsx" className="btn-cv" download>
-            <i className="fa-solid fa-file-excel" />
-            Tableau de synthèse
-          </a>
-        </div>
       </div>
     </section>
   );

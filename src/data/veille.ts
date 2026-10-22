@@ -5,12 +5,48 @@
 // et les solutions pour les sécuriser en entreprise.
 //
 // AJOUTER UN ARTICLE = ajouter un objet dans le tableau `articles`, rien d'autre.
-// Le tableau est rangé dans l'ordre chronologique : c'est l'ordre d'affichage.
-// Chaque fiche suit la même structure : métadonnées (média – date – catégorie), titre,
-// résumé factuel, puis « Pourquoi c'est important ».
+// Le tableau est rangé dans l'ordre chronologique. La page regroupe les articles par étape
+// du sujet (`etape`) et garde cet ordre à l'intérieur de chaque étape.
+// Chaque fiche suit la même structure : métadonnées (média – date), titre,
+// « Enjeu » (pourquoi c'est important), puis le résumé factuel, replié par défaut.
 
 // Union de littéraux : TS refuse toute autre valeur dans `categorie`.
 export type Categorie = "ARCHITECTURE" | "TECHNIQUE" | "STANDARD" | "SÉCURITÉ" | "GOUVERNANCE";
+
+// Les 3 étapes du sujet : chaque article est rangé dans l'une d'elles.
+export type Etape = "lire" | "agir" | "encadrer";
+
+// Le sujet, affiché en tête de page : un titre court et la question posée.
+export const sujet = {
+  titre: "Le RAG : Sécuriser les IA qui agissent sur le système d'information",
+  question:
+    "Les IA d'entreprise ne se contentent plus de lire des documents : elles appellent des API et exécutent du code. Comment garder le contrôle ?",
+};
+
+// Dans l'ordre d'affichage : le numéro de l'étape vient de sa position dans le tableau.
+export const etapes: { id: Etape; titre: string; theme: string; texte: string; icon: string }[] = [
+  {
+    id: "lire",
+    titre: "L'IA lit",
+    theme: "RAG",
+    texte: "Elle répond à partir des documents de l'entreprise.",
+    icon: "fa-solid fa-book-open",
+  },
+  {
+    id: "agir",
+    titre: "L'IA agit",
+    theme: "Agents IA",
+    texte: "Elle choisit ses outils, appelle des API et exécute du code.",
+    icon: "fa-solid fa-robot",
+  },
+  {
+    id: "encadrer",
+    titre: "On l'encadre",
+    theme: "Sécurité",
+    texte: "Droits limités, journaux d'activité et isolation par le système.",
+    icon: "fa-solid fa-shield-halved",
+  },
+];
 
 export type Article = {
   titre: string; // mon titre de fiche, en une phrase
@@ -20,6 +56,7 @@ export type Article = {
   source: string; // média qui l'a publié
   date: string; // format ISO "AAAA-MM-JJ"
   categorie: Categorie;
+  etape: Etape; // étape du sujet à laquelle l'article se rattache
   resume: string; // résumé factuel, 2 phrases maximum
   pourquoi: string; // impact pour un développeur SLAM ou pour le SI, en une phrase
   aLaUne?: boolean; // fiche mise en avant (les deux plus récentes, au cœur de l'oral)
@@ -60,6 +97,7 @@ export const articles: Article[] = [
     source: "LogRocket Blog",
     date: "2025-09-18",
     categorie: "ARCHITECTURE",
+    etape: "lire",
     resume:
       "Le tutoriel construit un chatbot Next.js avec LangChain.js selon le schéma RAG de base : retrouver les passages utiles dans une base de connaissances, puis laisser le LLM rédiger la réponse. Les documents y sont stockés sous forme d'embeddings, des vecteurs qui représentent le sens du texte.",
     pourquoi:
@@ -78,6 +116,7 @@ export const articles: Article[] = [
     source: "DEV Community",
     date: "2026-01-06",
     categorie: "TECHNIQUE",
+    etape: "lire",
     resume:
       "Avec des morceaux de texte de taille fixe, le RAG renvoie beaucoup de passages hors sujet. L'auteur passe à un découpage sémantique, qui regroupe les phrases selon leur sens, et favorise les passages qui contiennent les mots-clés de la question.",
     pourquoi:
@@ -95,6 +134,7 @@ export const articles: Article[] = [
     source: "ByteByteGo",
     date: "2026-03-23",
     categorie: "ARCHITECTURE",
+    etape: "agir",
     resume:
       "Le RAG classique cherche une seule fois puis répond, sans vérifier ce qu'il a trouvé. Le RAG agentique ajoute un agent qui choisit où chercher (base de données, documents, API), juge les résultats et recommence si besoin, au prix d'un coût 3 à 10 fois plus élevé.",
     pourquoi:
@@ -112,6 +152,7 @@ export const articles: Article[] = [
     source: "LogRocket Blog",
     date: "2026-04-29",
     categorie: "ARCHITECTURE",
+    etape: "lire",
     resume:
       "Le RAG vectoriel récupère des morceaux de texte isolés et échoue quand il faut croiser plusieurs informations. Le GraphRAG relie les entités dans un graphe et répond en « suivant les liens », avec une base comme Neo4j en production.",
     pourquoi:
@@ -128,6 +169,7 @@ export const articles: Article[] = [
     source: "Blog Model Context Protocol",
     date: "2026-07-28",
     categorie: "STANDARD",
+    etape: "agir",
     resume:
       "MCP est le protocole standard qui relie les IA aux outils et aux données de l'entreprise. Sa version du 28 juillet 2026 le rend sans état : n'importe quel serveur peut traiter une requête, comme pour une API web classique.",
     pourquoi:
@@ -146,6 +188,7 @@ export const articles: Article[] = [
     source: "Journal du Net",
     date: "2026-09-10",
     categorie: "SÉCURITÉ",
+    etape: "encadrer",
     resume:
       "Un groupe de travail de la CoSAI définit les journaux qu'une IA devrait produire : appels d'outils, scripts exécutés, échanges entre agents. Selon David Girard (TrendAI), beaucoup d'outils d'agents n'en produisent pas assez, et les clients y ont rarement accès.",
     pourquoi:
@@ -162,6 +205,7 @@ export const articles: Article[] = [
     source: "Journal du Net",
     date: "2026-10-01",
     categorie: "GOUVERNANCE",
+    etape: "encadrer",
     aLaUne: true,
     resume:
       "Selon Wavestone, 9 entreprises sur 10 enregistrent l'activité de leurs IA, mais seules 8 % envoient ces journaux à leur SOC. Peu gèrent les agents comme de vrais utilisateurs (15 %) ou ont un plan d'incident IA (12,5 %).",
@@ -184,6 +228,7 @@ export const articles: Article[] = [
     source: "Windows Developer Blog",
     date: "2026-10-07",
     categorie: "SÉCURITÉ",
+    etape: "encadrer",
     aLaUne: true,
     resume:
       "Avec MXC, Microsoft isole dans des conteneurs le code lancé par les agents IA. Une politique JSON, que l'agent ne peut pas modifier, fixe les fichiers et les adresses réseau auxquels il a accès, et les opérations bloquées sont journalisées.",

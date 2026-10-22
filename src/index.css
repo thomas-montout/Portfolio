@@ -357,7 +357,7 @@ p {
   color: var(--color-text-primary);
 }
 
-/* Menu déroulant (Projets → E5 / E6).
+/* Menu déroulant (ex : Parcours → Mon parcours / BTS SIO…).
    Le bouton reprend exactement le style des liens de la pilule. */
 .pill-dropdown {
   position: relative;
@@ -2048,6 +2048,57 @@ footer p {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Paragraphe d'introduction sous un titre (pages E6, Veille, Identité numérique). */
+.subsection-intro {
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.subsection-intro a {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Page E5 : onglets à gauche, bouton « Tableau de synthèse » à droite.
+   flex-wrap : si la place manque, le bouton passe sous les onglets. */
+.missions-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* L'espace au-dessus est déjà donné par la barre. */
+.missions-toolbar .tabs {
+  margin-top: 0;
+}
+
+/* Même pilule que les onglets, avec une bordure pour ne pas le confondre avec un onglet. */
+.btn-synthese {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  color: var(--color-text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.btn-synthese:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-text-secondary);
+}
+
 /* Onglets de la page E5 : même look que la pilule du header. */
 .tabs {
   display: inline-flex;
@@ -2149,7 +2200,8 @@ footer p {
 }
 
 /* ========== VEILLE TECHNOLOGIQUE ==========
-   Page Veille : sujet, flux RSS en direct, fil chronologique des fiches, outils et sources.
+   Page Veille : le sujet et ses 3 étapes, les articles groupés par étape, puis outils,
+   sources et flux RSS en direct.
    Réutilise .subsection_title (titres de sous-parties, section Missions)
    et .mini-card (encadrés outils / sources, section École). */
 .veille_technologique_container {
@@ -2158,22 +2210,91 @@ footer p {
   font-size: larger;
 }
 
-/* Problématique mise en avant, avec la bordure gauche de la timeline du parcours. */
-.veille-sujet {
-  margin-top: 1rem;
-  padding: 1.2rem 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
+/* Encadré du sujet : étiquette, titre, question, puis les 3 étapes. */
+.veille-hero {
+  margin-top: 1.5rem;
+  padding: 1.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-left: 3px solid var(--color-text-secondary);
-  border-radius: 4px;
-  color: var(--color-text-primary);
-  font-size: 1.4rem;
-  font-style: italic;
+  border-radius: 12px;
 }
 
-/* Texte d'introduction sous le sujet et sous chaque titre de sous-partie. */
-.veille-intro {
-  margin-top: 1rem;
+.veille-hero__label {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.veille-hero__titre {
+  margin-top: 0.5rem;
+  color: var(--color-text-primary);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.veille-hero__question {
+  margin-top: 0.75rem;
+  max-width: 60rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* Les 3 étapes côte à côte (empilées en mobile, voir les media queries en bas). */
+.veille-steps {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.veille-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.veille-step__icon {
+  margin-bottom: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 1.3rem;
+}
+
+.veille-step__titre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-primary);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* Thème de l'étape en petite pastille (RAG, Agents IA, Sécurité). Aussi dans les titres de groupe. */
+.veille-step__theme {
+  padding: 0.1rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.veille-step__texte {
   color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 /* Listes outils / sources : puce "▸" comme les débouchés du BTS. */
@@ -2319,7 +2440,7 @@ footer p {
   color: var(--color-text-primary);
 }
 
-/* 6 articles : 3 colonnes en grand écran, 2 en tablette, 1 en mobile. */
+/* 3 articles : une ligne en grand écran, 2 colonnes en tablette, 1 en mobile. */
 .rss-feed__list {
   list-style: none;
   padding: 0;
@@ -2435,60 +2556,52 @@ footer p {
   text-underline-offset: 3px;
 }
 
-/* ---------- Fil chronologique des fiches ---------- */
-/* Une ligne verticale à gauche (::before de la liste), un point par fiche (::before de chaque li). */
-.veille-timeline {
-  position: relative;
-  list-style: none;
-  margin: 1.5rem 0 0;
-  padding: 0 0 0 1.75rem;
+/* ---------- Articles groupés par étape ---------- */
+/* Un groupe par étape du sujet : titre numéroté, puis une grille de cartes. */
+.veille-etape {
+  margin-top: 1.75rem;
+}
+
+.veille-etape__titre {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-text-primary);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.veille-etape__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid var(--color-text-secondary);
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* 3 cartes par ligne en grand écran, 2 en tablette, 1 en mobile. */
+.veille-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
-.veille-timeline::before {
-  content: "";
-  position: absolute;
-  left: 0.45rem;
-  top: 0.75rem;
-  bottom: 0.75rem;
-  width: 2px;
-  background: linear-gradient(var(--color-text-secondary), rgba(255, 107, 107, 0.7));
-  opacity: 0.5;
-}
-
-.veille-timeline > li {
-  position: relative;
-}
-
-.veille-timeline > li::before {
-  content: "";
-  position: absolute;
-  left: calc(-1.3rem - 5px);
-  top: 1.35rem;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--color-bg-primary);
-  border: 2px solid var(--color-text-secondary);
-}
-
-.veille-timeline > li.is-une::before {
-  border-color: #ff6b6b;
-  box-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
-}
-
-/* ---------- Fiche article ---------- */
-/* Grille : 1 colonne en mobile (vignette au-dessus), 2 colonnes dès 768px (vignette à gauche). */
+/* ---------- Carte article (compacte) ---------- */
+/* Vignette en haut, texte dessous. Le lien est poussé en bas (margin-top: auto) :
+   il reste aligné d'une carte à l'autre sur une même ligne de la grille. */
 .veille-card {
-  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
   transition:
     background 0.3s ease,
     border-color 0.3s ease;
@@ -2498,27 +2611,26 @@ footer p {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Fiches « À la une » : même bordure accentuée que la carte SLAM / Coface. */
+/* Fiches « À la une » : bordure accentuée, comme la carte SLAM / Coface. */
 .veille-card--une {
-  border: 2px solid rgba(255, 107, 107, 0.3);
+  border-color: rgba(255, 107, 107, 0.4);
 }
 
 .veille-card--une:hover {
   border-color: var(--color-text-secondary);
 }
 
-/* Vignette : bandeau 2:1 en mobile, miniature 16:10 dans la colonne de gauche ensuite.
-   overflow: hidden coupe l'image aux coins arrondis, et pendant le zoom au survol. */
+/* overflow: hidden coupe l'image pendant le zoom au survol.
+   Bandeau 3:1 : assez pour reconnaître l'article sans allonger la carte. */
 .veille-card__thumb {
   display: block;
-  border-radius: 8px;
   overflow: hidden;
 }
 
 .veille-card__thumb .vignette {
   width: 100%;
-  aspect-ratio: 2 / 1;
-  font-size: 2.5rem;
+  aspect-ratio: 3 / 1;
+  font-size: 2rem;
   transition: transform 0.4s ease;
 }
 
@@ -2526,119 +2638,95 @@ footer p {
   transform: scale(1.04);
 }
 
-/* Contenu de la fiche : média, titre, résumé, pourquoi, lien. min-width: 0 = peut rétrécir. */
-.veille-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-width: 0;
-}
-
-@media (min-width: 768px) {
-  .veille-card {
-    grid-template-columns: 14rem 1fr;
-    gap: 1.5rem;
-    align-items: start;
-  }
-  .veille-card__thumb .vignette {
-    aspect-ratio: 16 / 10;
-  }
-}
-
-/* Ligne du haut : [Média] date ……… (À la une) CATÉGORIE */
-.veille-card__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.75rem;
-  font-size: 0.85rem;
-}
-
-/* Nom du média en pastille. */
-.veille-card__source {
-  padding: 0.2rem 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 999px;
-  color: var(--color-text-primary);
-  font-weight: 600;
-}
-
-.veille-card__date {
-  color: var(--color-text-secondary);
-}
-
-/* margin-left: auto pousse le groupe badge + catégorie tout à droite de la ligne. */
-.veille-card__tags {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.veille-card__categorie {
-  color: var(--color-text-secondary);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
+/* Badge posé sur l'image (le lien parent est en position: relative via .spotlight > *). */
 .veille-card__badge {
-  padding: 0.2rem 0.7rem;
-  background: rgba(255, 107, 107, 0.15);
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  padding: 0.2rem 0.65rem;
+  background: var(--color-bg-primary);
   border: 1px solid var(--color-text-secondary);
   border-radius: 999px;
   color: var(--color-text-secondary);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 2px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
+}
+
+/* flex: 1 : le corps remplit la hauteur de la carte, pour que margin-top: auto du lien marche. */
+.veille-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+.veille-card__meta {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
 .veille-card__title {
   color: var(--color-text-primary);
-  font-size: 1.15rem;
+  font-size: 1.02rem;
   font-weight: 600;
   line-height: 1.4;
-  letter-spacing: 0.5px;
 }
 
-/* Résumé en texte confortable : c'est le cœur de la fiche. */
-.veille-card__resume {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-/* « Pourquoi c'est important » : séparé du résumé par un simple trait horizontal. */
 .veille-card__why {
-  padding-top: 0.85rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--color-text-primary);
-  font-size: 0.95rem;
-  font-weight: 500;
-  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.88rem;
+  line-height: 1.55;
 }
 
 .veille-card__why strong {
-  font-weight: 700;
+  color: var(--color-text-primary);
 }
 
-/* Lien vers l'article + éventuel « Voir aussi ». */
-.veille-card__footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 1rem;
+/* Résumé replié : seul « Résumé » est visible tant qu'on ne clique pas dessus. */
+.veille-card__details {
+  color: rgba(255, 255, 255, 0.75);
   font-size: 0.85rem;
 }
 
+.veille-card__details summary {
+  width: fit-content;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.veille-card__details summary:hover {
+  color: var(--color-text-primary);
+}
+
+.veille-card__details p {
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+.veille-card__details a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .veille-card__link {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--color-text-secondary);
-  text-decoration: none;
+  font-size: 0.85rem;
   font-weight: 600;
+  text-decoration: none;
   transition: color 0.3s ease;
 }
 
@@ -2646,21 +2734,11 @@ footer p {
   color: var(--color-text-primary);
 }
 
-.veille-card__see-also {
-  flex-basis: 100%;
-  color: rgba(255, 255, 255, 0.65);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.veille-card__see-also:hover {
-  color: var(--color-text-primary);
-}
-
 @media (max-width: 992px) {
   .veille_technologique_container {
     padding: 2rem 1.5rem;
   }
+  .veille-grid,
   .rss-feed__list {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -2669,17 +2747,17 @@ footer p {
   .veille_technologique_container {
     padding: 2rem 0.5rem;
   }
-  .veille-sujet {
-    font-size: 1.15rem;
-    padding: 1rem;
+  .veille-hero {
+    padding: 1.25rem;
   }
+  .veille-hero__titre {
+    font-size: 1.4rem;
+  }
+  .veille-steps,
+  .veille-grid,
   .rss-feed__list {
     grid-template-columns: 1fr;
   }
-  .veille-card {
-    padding: 1rem 1.1rem;
-  }
-  .veille-card__resume,
   .veille-list li {
     font-size: 0.9rem;
   }
@@ -2688,19 +2766,86 @@ footer p {
   .veille_technologique_container {
     padding: 1.5rem 0.25rem;
   }
-  .veille-sujet {
-    font-size: 1rem;
+  .veille-hero__titre {
+    font-size: 1.2rem;
   }
-  .veille-timeline {
-    padding-left: 1.25rem;
-  }
-  .veille-timeline::before {
-    left: 0.3rem;
-  }
-  .veille-timeline > li::before {
-    left: calc(-0.95rem - 5px);
+  .veille-hero__question {
+    font-size: 0.95rem;
   }
   .rss-feed {
     padding: 1rem;
+  }
+}
+
+/* ========== IDENTITÉ NUMÉRIQUE ==========
+   Réutilise .subsection_title, .subsection-intro, .mini-card et .veille-list. */
+.identite_container {
+  padding: 2rem 2rem;
+  color: var(--color-text-secondary);
+  font-size: larger;
+}
+
+/* Carte de profil cliquable : icône, nom, adresse, puis ce que ce profil montre de moi. */
+.profil-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  text-decoration: none;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.profil-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-text-secondary);
+  transform: translateY(-3px);
+}
+
+.profil-card__icon {
+  margin-bottom: 0.4rem;
+  color: var(--color-text-secondary);
+  font-size: 1.8rem;
+}
+
+.profil-card__nom {
+  color: var(--color-text-primary);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+/* overflow-wrap: anywhere : une adresse longue peut se couper au lieu de déborder. */
+.profil-card__adresse {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.profil-card__role {
+  margin-top: 0.4rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 992px) {
+  .identite_container {
+    padding: 2rem 1.5rem;
+  }
+}
+@media (max-width: 768px) {
+  .identite_container {
+    padding: 2rem 0.5rem;
+  }
+}
+@media (max-width: 480px) {
+  .identite_container {
+    padding: 1.5rem 0.25rem;
   }
 }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Vignette from "./Vignette";
 
-// Bloc « Flux RSS en direct » de la page Veille : la preuve que la veille est automatisée.
+// Bloc « Flux RSS en direct » de la page Veille, placé en bas avec les outils et sources :
+// la preuve que la veille est automatisée, mais pas ma sélection (ce sont les articles bruts).
 // Les flux de mes sources (Journal du Net, ByteByteGo, LogRocket, TLDR AI) sont lus à chaque
 // visite (puis toutes les 10 min si la page reste ouverte), sans aucune saisie de ma part.
 // Un onglet par source, plus « Tous » qui mélange les derniers articles de toutes les sources.
@@ -10,7 +11,7 @@ import Vignette from "./Vignette";
 // lit les flux, les fusionne et renvoie un petit JSON (en dev, même fonction via vite.config.ts).
 
 const FEED_URL = "/api/rss";
-const NB_ARTICLES = 6;
+const NB_ARTICLES = 3;
 const REFRESH_MS = 10 * 60 * 1000;
 
 // Mêmes formes que ce que renvoie api/rss.ts.
@@ -21,7 +22,7 @@ type Status = "loading" | "ok" | "error";
 
 // Sélection de l'onglet « Tous » : on pioche À TOUR DE RÔLE dans chaque source
 // (le plus récent de chacune, puis le 2e de chacune…), sinon une source qui publie tous les
-// jours (ByteByteGo) remplirait les 6 cases à elle seule. Le résultat est ensuite remis par date.
+// jours (ByteByteGo) remplirait toutes les cases à elle seule. Le résultat est ensuite remis par date.
 function aTourDeRole(flux: Flux): ArticleFlux[] {
   // Un tableau d'articles par source : [[jdn1, jdn2…], [bbg1, bbg2…], …]
   const parSource = flux.sources.map((s) => flux.articles.filter((a) => a.source === s.id));
@@ -98,7 +99,10 @@ export default function RssFeed() {
           {status === "error" ? "Hors ligne" : "En direct"}
         </span>
         <div className="rss-feed__heading">
-          <h3>Flux RSS en direct · Veille active</h3>
+          <h3>En direct de mes sources</h3>
+          <p>
+            Derniers articles publiés, récupérés automatiquement par flux RSS, avant ma sélection.
+          </p>
           <p>
             {/* join(", ") : ["JDN", "TLDR AI"] → "JDN, TLDR AI" */}
             {flux.sources.map((s) => s.nom).join(", ")}

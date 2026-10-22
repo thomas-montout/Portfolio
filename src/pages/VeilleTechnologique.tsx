@@ -2,20 +2,28 @@ import { useSpotlight } from "../hooks/useSpotlight";
 import SectionTitle from "../components/SectionTitle";
 import RssFeed from "../components/RssFeed";
 import Vignette from "../components/Vignette";
-import { type Article, type Categorie, articles, outils, sources } from "../data/veille";
+import {
+  type Article,
+  type Categorie,
+  articles,
+  etapes,
+  outils,
+  sources,
+  sujet,
+} from "../data/veille";
 
 // Page Veille technologique (route /veille-technologique).
-// Ordre de lecture : le sujet → le flux RSS en direct (preuve que la veille est automatisée)
-// → mes articles analysés, dans l'ordre chronologique → mes outils et sources.
+// Ordre de lecture : le sujet et ses 3 étapes → mes articles analysés, rangés par étape
+// → mes outils et sources, avec le flux RSS en direct (la matière brute avant ma sélection).
 // Toutes les données viennent de data/veille.ts : ce fichier ne fait que de l'affichage.
 
-// "2026-09-29" → "29 septembre 2026".
+// "2026-09-29" → "29 sept. 2026" (mois abrégé : la carte reste sur une ligne).
 // timeZone "UTC" : une date ISO sans heure est lue comme minuit UTC. Sans cette option,
 // un visiteur à l'ouest de Greenwich (Canada…) verrait la veille, le 28.
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", {
     day: "numeric",
-    month: "long",
+    month: "short",
     year: "numeric",
     timeZone: "UTC",
   });
@@ -30,9 +38,8 @@ const iconesCategorie: Record<Categorie, string> = {
   GOUVERNANCE: "fa-solid fa-scale-balanced",
 };
 
-// Une fiche article : la vignette à gauche (au-dessus en mobile), puis toujours dans le même
-// ordre : média + date (et catégorie à droite), titre, résumé, un trait,
-// « Pourquoi c'est important », puis le lien vers l'article d'origine.
+// Carte compacte : vignette, média + date, titre, enjeu en une phrase, lien.
+// Le résumé complet reste disponible mais replié (<details>) pour ne pas surcharger la carte.
 // Sous-composant pour appeler useSpotlight une fois PAR carte (un hook ne s'appelle pas dans un .map()).
 // <article> plutôt que <div> : balise sémantique pour un contenu autonome.
 function VeilleCard({ article }: { article: Article }) {
@@ -55,51 +62,41 @@ function VeilleCard({ article }: { article: Article }) {
         aria-hidden="true"
       >
         <Vignette src={article.image} icon={iconesCategorie[article.categorie]} />
+        {article.aLaUne && <span className="veille-card__badge">À la une</span>}
       </a>
 
       <div className="veille-card__body">
-        <div className="veille-card__head">
-          <span className="veille-card__source">{article.source}</span>
+        <p className="veille-card__meta">
+          {article.source} ·{" "}
           {/* <time dateTime> : date lisible par les machines, texte lisible par les humains */}
-          <time dateTime={article.date} className="veille-card__date">
-            {formatDate(article.date)}
-          </time>
-          {/* Groupe poussé tout à droite de la ligne (margin-left: auto dans le CSS). */}
-          <span className="veille-card__tags">
-            {article.aLaUne && <span className="veille-card__badge">À la une</span>}
-            <span className="veille-card__categorie">{article.categorie}</span>
-          </span>
-        </div>
-
+          <time dateTime={article.date}>{formatDate(article.date)}</time>
+        </p>
         <h4 className="veille-card__title">{article.titre}</h4>
-        <p className="veille-card__resume">{article.resume}</p>
         <p className="veille-card__why">
-          <strong>Pourquoi c'est important :</strong> {article.pourquoi}
+          <strong>Enjeu :</strong> {article.pourquoi}
         </p>
 
-        <div className="veille-card__footer">
-          {/* title = infobulle au survol : le titre d'origine reste consultable (traçabilité)
-            sans alourdir la fiche. */}
-          <a
-            href={article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="veille-card__link"
-            title={article.titreOriginal}
-          >
-            Lire l'article <i className="fa-solid fa-arrow-up-right-from-square" />
-          </a>
+        {/* <details> / <summary> : bloc repliable natif du navigateur, sans JavaScript. */}
+        <details className="veille-card__details">
+          <summary>Résumé</summary>
+          <p>{article.resume}</p>
           {article.voirAussi && (
-            <a
-              href={article.voirAussi.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="veille-card__see-also"
-            >
+            <a href={article.voirAussi.url} target="_blank" rel="noopener noreferrer">
               Voir aussi : {article.voirAussi.titre} ({article.voirAussi.source})
             </a>
           )}
-        </div>
+        </details>
+
+        {/* title = infobulle au survol : le titre d'origine reste consultable (traçabilité). */}
+        <a
+          href={article.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="veille-card__link"
+          title={article.titreOriginal}
+        >
+          Lire l'article <i className="fa-solid fa-arrow-up-right-from-square" />
+        </a>
       </div>
     </article>
   );
@@ -111,38 +108,46 @@ export default function VeilleTechnologique() {
       <div className="veille_technologique_container">
         <SectionTitle>Veille technologique</SectionTitle>
 
-        {/* 1. Le sujet */}
-        <p className="veille-sujet">
-          Du RAG aux agents IA autonomes : comment sécuriser des IA qui agissent sur le système
-          d'information de l'entreprise&nbsp;?
-        </p>
-        <p className="veille-intro">
-          Le RAG (Retrieval-Augmented Generation) permet à une IA de répondre à partir des documents
-          de l'entreprise. En un an, ces systèmes sont passés de la simple recherche de documents à
-          des agents qui appellent des API et exécutent du code. Je suis cette évolution, et les
-          solutions qui apparaissent pour les encadrer.
-        </p>
+        {/* 1. Le sujet : titre court, question, puis les 3 étapes qui structurent toute la page. */}
+        <div className="veille-hero">
+          <span className="veille-hero__label">Mon sujet de veille</span>
+          <h3 className="veille-hero__titre">{sujet.titre}</h3>
+          <p className="veille-hero__question">{sujet.question}</p>
+          <ol className="veille-steps">
+            {etapes.map((e, i) => (
+              <li key={e.id} className="veille-step">
+                <i className={`veille-step__icon ${e.icon}`} aria-hidden="true" />
+                <span className="veille-step__titre">
+                  {i + 1}. {e.titre} <span className="veille-step__theme">{e.theme}</span>
+                </span>
+                <span className="veille-step__texte">{e.texte}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
 
-        {/* 2. Le flux en direct : indépendant des fiches, il prouve que la veille tourne seule. */}
-        <RssFeed />
-
-        {/* 3. Les fiches, dans l'ordre chronologique */}
+        {/* 2. Les articles, groupés par étape (ordre chronologique dans chaque étape). */}
         <h3 className="subsection_title">
-          <span>Le fil de ma veille : {articles.length} articles analysés</span>
+          <span>Mes articles analysés ({articles.length})</span>
         </h3>
-        <p className="veille-intro">
-          Du RAG « naïf » qui se contente de chercher, jusqu'aux agents isolés par le système
-          d'exploitation : les étapes clés, de la plus ancienne à la plus récente.
-        </p>
-        <ol className="veille-timeline">
-          {articles.map((a) => (
-            <li key={a.url} className={a.aLaUne ? "is-une" : ""}>
-              <VeilleCard article={a} />
-            </li>
-          ))}
-        </ol>
+        {etapes.map((e, i) => (
+          <div key={e.id} className="veille-etape">
+            <h4 className="veille-etape__titre">
+              <span className="veille-etape__num">{i + 1}</span>
+              {e.titre}
+              <span className="veille-step__theme">{e.theme}</span>
+            </h4>
+            <div className="veille-grid">
+              {articles
+                .filter((a) => a.etape === e.id)
+                .map((a) => (
+                  <VeilleCard key={a.url} article={a} />
+                ))}
+            </div>
+          </div>
+        ))}
 
-        {/* 4. Outils et sources */}
+        {/* 3. Outils et sources, puis le flux RSS en direct de ces sources. */}
         <h3 className="subsection_title">
           <span>Mes outils et mes sources</span>
         </h3>
@@ -174,6 +179,7 @@ export default function VeilleTechnologique() {
             </ul>
           </div>
         </div>
+        <RssFeed />
       </div>
     </section>
   );

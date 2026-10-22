@@ -46,21 +46,29 @@ export default function MissionsE5() {
           compétences techniques et ma capacité à travailler sur des projets variés.
         </p>
 
-        <div className="tabs" role="tablist">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              type="button"
-              role="tab"
-              aria-selected={current === t.key}
-              className={`tab ${current === t.key ? "active" : ""}`}
-              // replace : changer d'onglet ne crée pas une entrée d'historique par clic.
-              onClick={() => setSearchParams({ categorie: t.key }, { replace: true })}
-            >
-              {t.label}
-              <span className="tab__count">{missionsByCategory(t.key).length}</span>
-            </button>
-          ))}
+        {/* Barre d'outils : onglets à gauche, tableau de synthèse à droite. */}
+        <div className="missions-toolbar">
+          <div className="tabs" role="tablist">
+            {tabs.map((t) => (
+              <button
+                key={t.key}
+                type="button"
+                role="tab"
+                aria-selected={current === t.key}
+                className={`tab ${current === t.key ? "active" : ""}`}
+                // replace : changer d'onglet ne crée pas une entrée d'historique par clic.
+                onClick={() => setSearchParams({ categorie: t.key }, { replace: true })}
+              >
+                {t.label}
+                <span className="tab__count">{missionsByCategory(t.key).length}</span>
+              </button>
+            ))}
+          </div>
+          {/* download : le navigateur télécharge le fichier au lieu d'essayer de l'ouvrir. */}
+          <a href="/excel/tableau-de-synthese.xlsx" className="btn-synthese" download>
+            <i className="fa-solid fa-file-excel" />
+            Tableau de synthèse
+          </a>
         </div>
 
         {current === "formation" ? (

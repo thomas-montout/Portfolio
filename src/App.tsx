@@ -12,6 +12,7 @@ import Competence from "./pages/Competence";
 import MissionsE5 from "./pages/MissionsE5";
 import MissionsE6 from "./pages/MissionsE6";
 import VeilleTechnologique from "./pages/VeilleTechnologique";
+import IdentiteNumerique from "./pages/IdentiteNumerique";
 import Contact from "./pages/Contact";
 import { useRevealOnScroll } from "./hooks/useRevealOnScroll";
 
@@ -21,9 +22,10 @@ import { useRevealOnScroll } from "./hooks/useRevealOnScroll";
 //   /alternance           → École (Ynov) et alternance (Coface)
 //   /bts                  → Le BTS SIO (SLAM / SISR)
 //   /competence           → Compétences
-//   /e5                   → Projets E5 (onglets formation / entreprise / personnel)
-//   /e6                   → Projets E6
+//   /e5                   → Projets E5 (onglets formation / entreprise / personnel + tableau de synthèse)
+//   /e6                   → Projets E6 (PlayZone)
 //   /veille-technologique → Veille technologique
+//   /identite-numerique   → Identité numérique (profils professionnels)
 //   /contact              → Contact
 //   *                     → fallback vers l'accueil
 export default function App() {
@@ -48,6 +50,7 @@ export default function App() {
           <Route path="/e5" element={<MissionsE5 />} />
           <Route path="/e6" element={<MissionsE6 />} />
           <Route path="/veille-technologique" element={<VeilleTechnologique />} />
+          <Route path="/identite-numerique" element={<IdentiteNumerique />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

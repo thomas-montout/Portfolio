@@ -8,8 +8,8 @@
 // Le tableau est rangé pour refléter l'ordre d'affichage du site.
 // 1) FORMATION → sous-groupes par bloc BTS SIO : Support, Cyber, SLAM
 // 2) ENTREPRISE
-// 3) PERSONNEL (les missions taggées `epreuve: "E6"` apparaissent aussi
-//    sur la page /e6, sans duplication d'entrée).
+// 3) PERSONNEL
+// 4) E6 → projets taggés `epreuve: "E6"` (PlayZone), affichés uniquement sur /e6.
 //
 // CONVENTION DE TITRE : « <Type> — <Nom> », pour que toutes les cartes
 // affichent la même forme visuelle. Types utilisés :
@@ -45,7 +45,7 @@ export type Mission = {
   techs: TechIcon[];
   links: { label: string; href: string }[];
   category: MissionCategory;
-  epreuve?: string; // "E5" ou "E6", pour filtrer dans les pages dédiées.
+  epreuve?: "E6"; // projet de l'épreuve E6 : affiché sur /e6 et retiré de /e5.
   block?: MissionBlock; // pour les missions "formation" : bloc BTS SIO de rattachement.
 };
 
@@ -346,8 +346,6 @@ export const missions: Mission[] = [
 
   // ════════════════════════════════════════════════════════════════════
   // PERSONNEL
-  // (absolute-stream est aussi taggé epreuve: "E6" → apparaît dans la
-  //  page /e6 en plus de la section personnelle de /e5.)
   // ════════════════════════════════════════════════════════════════════
   {
     slug: "portfolio",
@@ -404,7 +402,6 @@ export const missions: Mission[] = [
       { label: "Documentation", href: "/pdf/doc-abolutestream.pdf" },
     ],
     category: "personnel",
-    epreuve: "E6",
   },
   {
     slug: "v-room",
@@ -488,13 +485,55 @@ export const missions: Mission[] = [
     links: [{ label: "Github", href: "https://github.com/thomas-montout/parc-vehicules" }],
     category: "personnel",
   },
+
+  // ════════════════════════════════════════════════════════════════════
+  // E6 — PLAYZONE
+  // Même contexte pour les deux projets : l'entreprise ATM (fictive) développe pour la
+  // Mairie de Paris une plateforme de réservation de lieux de loisirs.
+  // Squelettes : techs, liens et documentation à compléter au fil du projet.
+  // ════════════════════════════════════════════════════════════════════
+  {
+    slug: "playzone-client-leger",
+    title: "Projet — PlayZone (client léger)",
+    description:
+      "Site web où les visiteurs réservent une activité (karting, laser game, escape game, bowling) dans un lieu de loisirs parisien.",
+    image: "/img/photos/minia-playzone-client-leger.png",
+    techs: [
+      { label: "Node.js", icon: "devicon-nodejs-plain colored" },
+      { label: "Express", icon: "devicon-express-original" },
+      { label: "MySQL", icon: "devicon-mysql-plain colored" },
+    ],
+    links: [],
+    category: "formation",
+    epreuve: "E6",
+  },
+  {
+    slug: "playzone-client-lourd",
+    title: "Projet — PlayZone (client lourd)",
+    description:
+      "Application de bureau pour les gérants de lieux et les agents de la Ville, reliée à la même base de données que le site.",
+    image: "/img/photos/minia-playzone-client-lourd.png",
+    techs: [
+      { label: "Java", icon: "devicon-java-plain colored" },
+      { label: "MySQL", icon: "devicon-mysql-plain colored" },
+    ],
+    links: [],
+    category: "formation",
+    epreuve: "E6",
+  },
 ];
 // ════════════════════════════════════════════════════════════════════
 // HELPERS — évitent de répéter les filtres dans les composants.
 // ════════════════════════════════════════════════════════════════════
 
+// Les projets E6 ont leur propre page : on les écarte de tout ce qu'affiche /e5.
+const missionsE5 = missions.filter((m) => m.epreuve !== "E6");
+
 export const missionsByCategory = (cat: MissionCategory) =>
-  missions.filter((m) => m.category === cat);
+  missionsE5.filter((m) => m.category === cat);
 
 // Filtre par bloc BTS SIO (utilisé pour la sous-segmentation de la page formation).
-export const missionsByBlock = (block: MissionBlock) => missions.filter((m) => m.block === block);
+export const missionsByBlock = (block: MissionBlock) => missionsE5.filter((m) => m.block === block);
+
+// Projets affichés sur /e6.
+export const missionsE6 = missions.filter((m) => m.epreuve === "E6");
