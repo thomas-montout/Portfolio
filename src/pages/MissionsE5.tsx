@@ -46,7 +46,7 @@ export default function MissionsE5() {
           compétences techniques et ma capacité à travailler sur des projets variés.
         </p>
 
-        {/* Barre d'outils : onglets à gauche, tableau de synthèse à droite. */}
+        {/* Barre d'outils : les onglets, puis le tableau de synthèse juste à côté. */}
         <div className="missions-toolbar">
           <div className="tabs" role="tablist">
             {tabs.map((t) => (

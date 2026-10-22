@@ -15,13 +15,13 @@ const navItems: NavItem[] = [
       { to: "/parcours", label: "Mon parcours" },
       { to: "/alternance", label: "École & alternance" },
       { to: "/bts", label: "BTS SIO" },
-      { to: "/identite-numerique", label: "Identité numérique" },
     ],
   },
   { to: "/competence", label: "Compétences" },
   { to: "/e5", label: "Projets E5" },
   { to: "/e6", label: "Projets E6" },
   { to: "/veille-technologique", label: "Veille" },
+  { to: "/identite-numerique", label: "Identité numérique" },
   { to: "/contact", label: "Contact" },
 ];
 

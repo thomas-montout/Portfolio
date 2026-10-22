@@ -46,19 +46,20 @@ export default function BentoHero({ id = "hero" }: { id?: string }) {
       </Link>
 
       {/* Cellule 4 : Stack technique — clic = page /competence.
-          Liste plate, flex-wrap centrée. La vraie pyramide est dans la page Compétences. */}
+          Liste plate, flex-wrap centrée : seulement la stack principale, la liste complète
+          est dans la page Compétences (dans le même ordre, en tête de chaque catégorie). */}
       <Link to="/competence" className="bento__cell bento__stack bento__cell--link">
         <span className="bento__label">Ma stack</span>
         <div className="bento__stack-icons">
-          <i className="devicon-typescript-plain colored" title="TypeScript" />
-          <i className="devicon-javascript-plain colored" title="JavaScript" />
+          <i className="devicon-java-plain colored" title="Java" />
           <i className="devicon-react-plain colored" title="React" />
           <i className="devicon-nextjs-plain colored" title="Next.js" />
+          <i className="devicon-javascript-plain colored" title="JavaScript" />
+          <i className="devicon-typescript-plain colored" title="TypeScript" />
+          <i className="devicon-nodejs-plain colored" title="Node.js" />
           <i className="devicon-symfony-original colored" title="Symfony" />
           <i className="devicon-php-plain colored" title="PHP" />
           <i className="devicon-postgresql-plain colored" title="PostgreSQL" />
-          <i className="devicon-html5-plain colored" title="HTML5" />
-          <i className="devicon-css3-plain colored" title="CSS3" />
         </div>
       </Link>
 
