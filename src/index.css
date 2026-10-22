@@ -453,47 +453,60 @@ p {
 /* 992px et non 768px : avec ses 8 liens, la barre mesure environ 900px de large ;
    en dessous de 992px elle déborderait, on passe donc au menu burger. */
 @media (max-width: 992px) {
+  /* Le burger flotte en bas à droite, au même endroit que le bouton « retour en haut ».
+     transition sur bottom : il glisse quand il doit laisser la place à ce bouton. */
+  .pill-header {
+    top: auto;
+    left: auto;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    transform: none;
+    transition: bottom 0.3s ease;
+  }
+
+  /* Quand le bouton « retour en haut » est affiché, il garde le coin et le burger remonte
+     juste au-dessus : 3rem de bouton + 0.75rem d'écart.
+     :has() = « un body qui contient un .scroll-top visible » ; pas besoin de JavaScript
+     pour faire communiquer les deux composants. */
+  body:has(.scroll-top.is-visible) .pill-header {
+    bottom: calc(1.5rem + 3rem + 0.75rem);
+  }
+
   .pill-burger {
     display: block;
   }
-  /* Sur mobile, on cache la barre pill et on l'ouvre en menu vertical */
+
+  /* Le menu s'ouvre au-dessus du burger, aligné sur son bord droit.
+     max-height + overflow : sur un petit écran, le menu défile au lieu de sortir de l'écran. */
   .pill-nav {
     display: none;
     position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: calc(100% + 0.5rem);
+    right: 0;
     flex-direction: column;
     border-radius: 1.5rem;
     padding: 0.5rem;
     min-width: 220px;
+    max-height: calc(100vh - 11rem);
+    overflow-y: auto;
   }
 
+  /* Fond quasi opaque (le même que le menu déroulant) : le texte de la page ne transparaît plus. */
   .pill-nav.open {
     display: flex;
+    background: rgba(70, 22, 29, 0.97);
   }
 
   .pill-nav a {
     text-align: center;
   }
 
-  /* Dans le menu burger, le groupe Parcours est toujours déplié :
-     le bouton devient un petit intitulé, ses pages s'affichent juste dessous. */
+  /* Dans le menu burger, le groupe Parcours est toujours déplié et son intitulé est masqué :
+     ses pages s'affichent comme les autres liens. */
   .pill-dropdown {
     flex-direction: column;
   }
   .pill-dropdown__toggle {
-    justify-content: center;
-    pointer-events: none;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0.6;
-  }
-  .pill-dropdown__toggle.active {
-    background: none;
-  }
-  .pill-dropdown__toggle i {
     display: none;
   }
   .pill-dropdown__menu {
@@ -508,6 +521,24 @@ p {
   }
   .pill-dropdown__menu::before {
     content: none;
+  }
+}
+
+/* Sous 768px, le bouton « retour en haut » rétrécit (voir .scroll-top) : le burger prend la
+   même taille et la même position, pour que les deux restent alignés l'un au-dessus de l'autre.
+   Placé APRÈS le bloc 992px : à sélecteurs égaux, c'est la dernière règle qui s'applique. */
+@media (max-width: 768px) {
+  .pill-header {
+    right: 1rem;
+    bottom: 1rem;
+  }
+  body:has(.scroll-top.is-visible) .pill-header {
+    bottom: calc(1rem + 2.6rem + 0.6rem);
+  }
+  .pill-burger {
+    width: 2.6rem;
+    height: 2.6rem;
+    font-size: 1rem;
   }
 }
 
