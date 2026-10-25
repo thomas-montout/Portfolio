@@ -11,12 +11,9 @@
 // 3) PERSONNEL
 // 4) E6 → projets taggés `epreuve: "E6"` (PlayZone), affichés uniquement sur /e6.
 //
-// CONVENTION DE TITRE : « <Type> — <Nom> », pour que toutes les cartes
-// affichent la même forme visuelle. Types utilisés :
-//   - "Atelier" pour les ateliers de formation (support + SLAM ateliers)
-//   - "Labo"    pour les labs cybersécurité
-//   - "TP"      pour les travaux pratiques (MySQL, PHP)
-//   - "Projet"  pour les projets (formation en équipe, entreprise, personnels)
+// CONVENTION DE TITRE : uniquement le nom du projet, sans préfixe de type
+// (« Atelier — », « Labo — »…). Tout est un projet : la catégorie et le bloc
+// suffisent à les classer.
 //
 // Cet ordre et ces conventions n'ont PAS d'incidence fonctionnelle (les
 // pages re-filtrent via missionsByCategory / missionsByBlock) — c'est de
@@ -57,11 +54,12 @@ export const missions: Mission[] = [
   // ─── Support et mise à disposition de services informatiques ───
   {
     slug: "serveur-apache",
-    title: "Atelier — Serveur Apache",
-    description: "Installer un serveur Apache sur Ubuntu pour héberger des sites web.",
+    title: "Serveur web Apache",
+    description:
+      "Installer Apache2 sur Ubuntu, le tester depuis le navigateur, puis analyser son arborescence et sa configuration modulaire.",
     image: "/img/photos/minia-apache.jpg",
     techs: [
-      { label: "Linux", icon: "devicon-linux-plain colored" },
+      { label: "Ubuntu", icon: "devicon-ubuntu-plain colored" },
       { label: "Apache", icon: "devicon-apache-plain colored" },
     ],
     links: [{ label: "Documentation", href: "/pdf/doc-apache.pdf" }],
@@ -70,39 +68,25 @@ export const missions: Mission[] = [
   },
   {
     slug: "gestion-parc-informatique",
-    title: "Atelier — OCS Inventory & GLPI",
+    title: "GLPI × OCS Inventory",
     description:
-      "Déployer un serveur OCS Inventory couplé à GLPI pour inventorier automatiquement un parc informatique.",
+      "Déployer GLPI et OCS Inventory sur un serveur Ubuntu, inventorier le parc par agents, puis traiter des tickets reliés aux machines.",
     image: "/img/photos/minia-ocs-glpi.png",
     techs: [
-      { label: "Linux", icon: "devicon-linux-plain colored" },
+      { label: "Ubuntu", icon: "devicon-ubuntu-plain colored" },
       { label: "Apache", icon: "devicon-apache-plain colored" },
-      { label: "MySQL", icon: "devicon-mysql-plain colored" },
+      { label: "MariaDB", icon: "devicon-mysql-plain colored" },
       { label: "PHP", icon: "devicon-php-plain colored" },
-      { label: "VMware", customIcon: "/img/icons/vmware-logo.svg" },
+      { label: "OCS Inventory", customIcon: "/img/icons/ocs-logo.png" },
+      { label: "GLPI", customIcon: "/img/icons/glpi-logo.svg" },
     ],
     links: [{ label: "Documentation", href: "/pdf/doc-OCS-GLPI.pdf" }],
     category: "formation",
     block: "support",
   },
-  {
-    slug: "gestion-parc-tickets",
-    title: "Atelier — Gestion de tickets (GLPI / OCS)",
-    description: "Manipuler le cycle de vie complet d'un ticket dans GLPI et le lier à OCS.",
-    image: "/img/photos/minia-ocs-glpi.png",
-    techs: [
-      { label: "Linux", icon: "devicon-linux-plain colored" },
-      { label: "OCS Inventory", customIcon: "/img/icons/ocs-logo.png" },
-      { label: "GLPI", customIcon: "/img/icons/glpi-logo.svg" },
-      { label: "VMware", customIcon: "/img/icons/vmware-logo.svg" },
-    ],
-    links: [{ label: "Documentation", href: "/pdf/doc-OCS-GLPI-tickets.pdf" }],
-    category: "formation",
-    block: "support",
-  },
   // {
   //   slug: "windows-server-2019",
-  //   title: "Atelier — Windows Server 2019",
+  //   title: "Windows Server 2019",
   //   description: "Installer Windows Server 2019 en VM et le configurer.",
   //   image: "/img/photos/minia-winserver.jpg",
   //   techs: [
@@ -115,23 +99,23 @@ export const missions: Mission[] = [
   // },
 
   // ─── Cybersécurité des services informatiques ───
-  // Ordre pédagogique : LABO 1 → LABO 2, puis prépa DVWA → attaque DVWA, puis crypto.
-  {
-    slug: "verif-integrite",
-    title: "Labo — Vérification d'intégrité",
-    description: "Vérifier qu'un téléchargement n'a pas été altéré via SHA-256.",
-    image: "/img/photos/kali-linux1.png",
-    techs: [
-      { label: "Kali Linux", customIcon: "/img/icons/logo-kali.png" },
-      { label: "Powershell", icon: "devicon-powershell-plain colored" },
-    ],
-    links: [{ label: "Documentation", href: "/pdf/doc-verif-integrite.pdf" }],
-    category: "formation",
-    block: "cyber",
-  },
+  // Ordre pédagogique : prépa DVWA → attaque DVWA, puis crypto.
+  // {
+  //   slug: "verif-integrite",
+  //   title: "Vérification d'intégrité",
+  //   description: "Vérifier qu'un téléchargement n'a pas été altéré via SHA-256.",
+  //   image: "/img/photos/kali-linux1.png",
+  //   techs: [
+  //     { label: "Kali Linux", customIcon: "/img/icons/logo-kali.png" },
+  //     { label: "Powershell", icon: "devicon-powershell-plain colored" },
+  //   ],
+  //   links: [{ label: "Documentation", href: "/pdf/doc-verif-integrite.pdf" }],
+  //   category: "formation",
+  //   block: "cyber",
+  // },
   // {
   //   slug: "besoin-chiffrement",
-  //   title: "Labo — Besoin de chiffrement",
+  //   title: "Besoin de chiffrement",
   //   description: "Démontrer pourquoi et comment chiffrer les communications.",
   //   image: "/img/photos/kali-linux1.png",
   //   techs: [
@@ -144,9 +128,9 @@ export const missions: Mission[] = [
   // },
   {
     slug: "dvwa-deployment",
-    title: "Labo — Déploiement DVWA",
+    title: "Lab de cybersécurité DVWA",
     description:
-      "Monter un environnement DVWA isolé sur Kali Linux pour s'entraîner aux attaques web en toute légalité.",
+      "Déployer DVWA sur Kali Linux et le confiner en local dans une VM isolée, pour s'entraîner légalement aux tests de sécurité.",
     image: "/img/photos/dvwa.png",
     techs: [
       { label: "Kali Linux", customIcon: "/img/icons/logo-kali.png" },
@@ -160,17 +144,21 @@ export const missions: Mission[] = [
   },
   {
     slug: "dvwa-bruteforce",
-    title: "Labo — Force brute sur DVWA",
-    description: "Mener une attaque par force brute de bout en bout sur DVWA.",
+    title: "Attaque par force brute",
+    description:
+      "Exploiter une faille d'authentification de DVWA avec Burp Suite Intruder, puis en déduire les mesures pour la corriger.",
     image: "/img/photos/dvwa.png",
-    techs: [{ label: "Kali Linux", customIcon: "/img/icons/logo-kali.png" }],
+    techs: [
+      { label: "Kali Linux", customIcon: "/img/icons/logo-kali.png" },
+      { label: "Burp Suite", icon: "devicon-burpsuite-plain colored" },
+    ],
     links: [{ label: "Documentation", href: "/pdf/doc-bruteforce.pdf" }],
     category: "formation",
     block: "cyber",
   },
   // {
   //   slug: "crypto-asymetrique",
-  //   title: "Labo — Cryptographie asymétrique",
+  //   title: "Cryptographie asymétrique",
   //   description:
   //     "Générer une paire de clés, chiffrer un message, puis signer et vérifier.",
   //   image: "/img/photos/kali-linux1.png",
@@ -186,7 +174,7 @@ export const missions: Mission[] = [
   // ─── Solution Logiciel et Application Métier (SLAM) ───
   {
     slug: "e-enseignement",
-    title: "Projet — E-enseignement",
+    title: "E-enseignement",
     description:
       "Site pédagogique et vitrine du groupe, réalisé en équipe de quatre : cours et exercices corrigés en algo, C, Java, JavaScript et PHP.",
     image: "/img/photos/minia-e-enseignement.png",
@@ -195,82 +183,84 @@ export const missions: Mission[] = [
       { label: "CSS", icon: "devicon-css3-plain colored" },
       { label: "JavaScript", icon: "devicon-javascript-plain colored" },
       { label: "Docker", icon: "devicon-docker-plain colored" },
+      { label: "nginx", icon: "devicon-nginx-original colored" },
     ],
     links: [
       { label: "Live", href: "https://thomas-montout.github.io/E-enseignement/" },
       { label: "Github", href: "https://github.com/thomas-montout/E-enseignement" },
+      { label: "Documentation", href: "/pdf/doc-e-enseignement.pdf" },
     ],
     category: "formation",
     block: "slam",
   },
-  {
-    slug: "symfony-biblios",
-    title: "Atelier — Symfony Biblios",
-    description:
-      "Démarrer un projet Symfony 7 de zéro pour comprendre le cycle d'une requête HTTP, le routing et le rendu via Twig.",
-    image: "/img/photos/minia-symfony.jpg",
-    techs: [{ label: "Symfony", icon: "devicon-symfony-plain colored" }],
-    links: [{ label: "Documentation", href: "/pdf/doc-symfony.pdf" }],
-    category: "formation",
-    block: "slam",
-  },
-  {
-    slug: "atelier-symfony-twig",
-    title: "Atelier — Symfony & Twig",
-    description: "Construire des vues dynamiques avec Twig dans Symfony.",
-    image: "/img/photos/twig.png",
-    techs: [
-      { label: "PHP", icon: "devicon-php-plain colored" },
-      { label: "Symfony", icon: "devicon-symfony-plain colored" },
-      { label: "Twig", customIcon: "/img/icons/logo-twig.png" },
-    ],
-    links: [],
-    category: "formation",
-    block: "slam",
-  },
-  {
-    slug: "atelier-mvc",
-    title: "Atelier — Pattern MVC",
-    description: "Comprendre le pattern MVC et ce qu'il apporte pour un projet web.",
-    image: "/img/photos/minia-mvc.png",
-    techs: [{ label: "PHP", icon: "devicon-php-plain colored" }],
-    links: [{ label: "Documentation", href: "/pdf/doc-atelierMVC.pdf" }],
-    category: "formation",
-    block: "slam",
-  },
-  {
-    slug: "tp-mysql",
-    title: "TP — MySQL / MariaDB",
-    description: "Tavail pratique pour s'approprier SQL autour d'un mini-blog.",
-    image: "/img/photos/minia-mysql.png",
-    techs: [
-      { label: "MySQL", icon: "devicon-mysql-plain colored" },
-      { label: "Linux", icon: "devicon-linux-plain colored" },
-    ],
-    links: [{ label: "Documentation", href: "/pdf/doc-initiation-pratique-mysql-mariadb.pdf" }],
-    category: "formation",
-    block: "slam",
-  },
-  {
-    slug: "tp-php",
-    title: "TP — PHP fondamentaux",
-    description: "Six exercices progressifs pour ancrer les bases du PHP côté serveur.",
-    image: "/img/photos/minia-php.jpeg",
-    techs: [
-      { label: "MySQL", icon: "devicon-mysql-plain colored" },
-      { label: "PHP", icon: "devicon-php-plain colored" },
-    ],
-    links: [{ label: "Documentation", href: "/pdf/doc-travaux-pratique-fondamentauxPHP.pdf" }],
-    category: "formation",
-    block: "slam",
-  },
+  // {
+  //   slug: "symfony-biblios",
+  //   title: "Symfony Biblios",
+  //   description:
+  //     "Démarrer un projet Symfony 7 de zéro pour comprendre le cycle d'une requête HTTP, le routing et le rendu via Twig.",
+  //   image: "/img/photos/minia-symfony.jpg",
+  //   techs: [{ label: "Symfony", icon: "devicon-symfony-plain colored" }],
+  //   links: [{ label: "Documentation", href: "/pdf/doc-symfony.pdf" }],
+  //   category: "formation",
+  //   block: "slam",
+  // },
+  // {
+  //   slug: "atelier-symfony-twig",
+  //   title: "Symfony & Twig",
+  //   description: "Construire des vues dynamiques avec Twig dans Symfony.",
+  //   image: "/img/photos/twig.png",
+  //   techs: [
+  //     { label: "PHP", icon: "devicon-php-plain colored" },
+  //     { label: "Symfony", icon: "devicon-symfony-plain colored" },
+  //     { label: "Twig", customIcon: "/img/icons/logo-twig.png" },
+  //   ],
+  //   links: [],
+  //   category: "formation",
+  //   block: "slam",
+  // },
+  // {
+  //   slug: "atelier-mvc",
+  //   title: "Pattern MVC",
+  //   description: "Comprendre le pattern MVC et ce qu'il apporte pour un projet web.",
+  //   image: "/img/photos/minia-mvc.png",
+  //   techs: [{ label: "PHP", icon: "devicon-php-plain colored" }],
+  //   links: [{ label: "Documentation", href: "/pdf/doc-atelierMVC.pdf" }],
+  //   category: "formation",
+  //   block: "slam",
+  // },
+  // {
+  //   slug: "tp-mysql",
+  //   title: "MySQL / MariaDB",
+  //   description: "Tavail pratique pour s'approprier SQL autour d'un mini-blog.",
+  //   image: "/img/photos/minia-mysql.png",
+  //   techs: [
+  //     { label: "MySQL", icon: "devicon-mysql-plain colored" },
+  //     { label: "Linux", icon: "devicon-linux-plain colored" },
+  //   ],
+  //   links: [{ label: "Documentation", href: "/pdf/doc-initiation-pratique-mysql-mariadb.pdf" }],
+  //   category: "formation",
+  //   block: "slam",
+  // },
+  // {
+  //   slug: "tp-php",
+  //   title: "PHP fondamentaux",
+  //   description: "Six exercices progressifs pour ancrer les bases du PHP côté serveur.",
+  //   image: "/img/photos/minia-php.jpeg",
+  //   techs: [
+  //     { label: "MySQL", icon: "devicon-mysql-plain colored" },
+  //     { label: "PHP", icon: "devicon-php-plain colored" },
+  //   ],
+  //   links: [{ label: "Documentation", href: "/pdf/doc-travaux-pratique-fondamentauxPHP.pdf" }],
+  //   category: "formation",
+  //   block: "slam",
+  // },
 
   // ════════════════════════════════════════════════════════════════════
   // ENTREPRISE
   // ════════════════════════════════════════════════════════════════════
   {
     slug: "request-tool",
-    title: "Projet — Request Tool",
+    title: "Request Tool",
     description:
       "Remplacer le template Excel de demandes d'accès IAM par un outil dédié : étude, conception du workflow, tests UAT et déploiement en production.",
     image: "/img/photos/minia-request-tool.png",
@@ -283,7 +273,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "broker-portal",
-    title: "Projet — Comptes Broker Portal",
+    title: "Comptes Broker Portal",
     description:
       "Accélérer la création des comptes Broker Portal en adaptant les requêtes SQL qui récupèrent les données de référence.",
     image: "/img/photos/minia-broker-portal.png",
@@ -296,7 +286,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "habilitations-iam",
-    title: "Projet — Habilitations IAM",
+    title: "Habilitations IAM",
     description:
       "Contrôler et attribuer les droits d'accès (arrivées, mutations, départs) selon les règles IAM, les approbations et les niveaux de délégation.",
     image: "/img/photos/minia-habilitations-iam.png",
@@ -309,7 +299,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "template-iam",
-    title: "Projet — Template IAM",
+    title: "Template IAM",
     description:
       "Faire évoluer le template Excel de demandes d'accès : nouveaux formulaires, formules, validations de données et listes déroulantes.",
     image: "/img/photos/minia-template-iam.png",
@@ -319,7 +309,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "transfert-iam",
-    title: "Projet — Transfert d'activité IAM",
+    title: "Transfert d'activité IAM",
     description:
       "Assurer la continuité de service pendant le transfert de l'activité IAM vers un prestataire : procédures, guides et accompagnement.",
     image: "/img/photos/minia-transfert-iam.png",
@@ -329,7 +319,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "bot-iam",
-    title: "Projet — Bot IAM",
+    title: "Bot IAM",
     description:
       "Bot d'assistance basé sur la RAG (Retrieval Augmented Generation) pour répondre aux questions IAM des équipes en s'appuyant sur la doc interne.",
     image: "/img/photos/minia-botiam.png",
@@ -349,7 +339,7 @@ export const missions: Mission[] = [
   // ════════════════════════════════════════════════════════════════════
   {
     slug: "portfolio",
-    title: "Projet — Portfolio",
+    title: "Portfolio",
     description: "Portfolio développé pour porter ma soutenance E5.",
     image: "/img/photos/minia-portfolio.png",
     techs: [
@@ -366,14 +356,15 @@ export const missions: Mission[] = [
   },
   {
     slug: "in-the-cave",
-    title: "Projet — In the Cave",
+    title: "In the Cave",
     description:
-      "Transformer un exercice JavaScript freeCodeCamp en RPG textuel React / TypeScript pour monter en compétences sur ces technologies.",
+      "Transformer un exercice JavaScript freeCodeCamp en RPG de combat jouable dans le navigateur, avec React et TypeScript.",
     image: "/img/photos/minia-inthecave.jpg",
     techs: [
       { label: "React", icon: "devicon-react-plain colored" },
       { label: "TypeScript", icon: "devicon-typescript-plain colored" },
       { label: "Vite", icon: "devicon-vite-plain colored" },
+      { label: "Tailwind", icon: "devicon-tailwindcss-plain colored" },
       { label: "Zustand", customIcon: "/img/icons/logo-zustand.png" },
     ],
     links: [
@@ -385,8 +376,9 @@ export const missions: Mission[] = [
   },
   {
     slug: "absolute-stream",
-    title: "Projet — Absolute Stream",
-    description: "Plateforme sociale type Letterboxd développée en équipe autour d'une API.",
+    title: "Absolute Stream",
+    description:
+      "Plateforme communautaire de suivi de films, séries et animés inspirée de Letterboxd, réalisée en binôme autour de l'API TMDB.",
     image: "/img/photos/minia-absolutestream.png",
     techs: [
       { label: "Next.js", icon: "devicon-nextjs-plain colored" },
@@ -405,7 +397,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "v-room",
-    title: "Projet — V.ROOM",
+    title: "V.ROOM",
     description:
       "E-commerce de véhicules en architecture découplée React + API Symfony, avec un assistant IA qui interprète les besoins en langage naturel.",
     image: "/img/photos/minia-vroom.png",
@@ -424,7 +416,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "pink-monster",
-    title: "Projet — Pink Monster",
+    title: "Pink Monster",
     description:
       "Petit jeu de plateforme 2D en pixel art avec Phaser pour aborder la POO appliquée au jeu vidéo et la gestion d'états.",
     image: "/img/photos/minia-pinkmonster.png",
@@ -441,7 +433,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "faire-part-mariage",
-    title: "Projet — Faire-part de mariage",
+    title: "Faire-part de mariage",
     description:
       "Site faire-part pour un mariage, conçu comme un terrain d'expérimentation pur sur les animations et la mise en scène.",
     image: "/img/photos/minia-fairepart.png",
@@ -455,7 +447,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "tempo",
-    title: "Projet — Tempo",
+    title: "Tempo",
     description:
       "App météo qui change complètement de skin selon les conditions retournées par une API publique.",
     image: "/img/photos/minia-tempo.png",
@@ -472,7 +464,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "iso-stock",
-    title: "Projet — ISO Stock",
+    title: "ISO Stock",
     description:
       "Application de bureau pour une entreprise de lavage de vitres : savoir quel matériel se trouve dans quel véhicule de la flotte.",
     image: "/img/photos/minia-iso-stock.png",
@@ -494,7 +486,7 @@ export const missions: Mission[] = [
   // ════════════════════════════════════════════════════════════════════
   {
     slug: "playzone-client-leger",
-    title: "Projet — PlayZone (client léger)",
+    title: "PlayZone (client léger)",
     description:
       "Site web où les visiteurs réservent une activité (karting, laser game, escape game, bowling) dans un lieu de loisirs parisien.",
     image: "/img/photos/minia-playzone-client-leger.png",
@@ -509,7 +501,7 @@ export const missions: Mission[] = [
   },
   {
     slug: "playzone-client-lourd",
-    title: "Projet — PlayZone (client lourd)",
+    title: "PlayZone (client lourd)",
     description:
       "Application de bureau pour les gérants de lieux et les agents de la Ville, reliée à la même base de données que le site.",
     image: "/img/photos/minia-playzone-client-lourd.png",
