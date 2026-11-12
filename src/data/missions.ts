@@ -57,7 +57,7 @@ export const missions: Mission[] = [
     title: "Serveur web Apache",
     description:
       "Installer Apache2 sur Ubuntu, le tester depuis le navigateur, puis analyser son arborescence et sa configuration modulaire.",
-    image: "/img/photos/minia-apache.jpg",
+    image: "/img/photos/minia-apache.png",
     techs: [
       { label: "Ubuntu", icon: "devicon-ubuntu-plain colored" },
       { label: "Apache", icon: "devicon-apache-plain colored" },
@@ -131,7 +131,7 @@ export const missions: Mission[] = [
     title: "Lab de cybersécurité DVWA",
     description:
       "Déployer DVWA sur Kali Linux et le confiner en local dans une VM isolée, pour s'entraîner légalement aux tests de sécurité.",
-    image: "/img/photos/dvwa.png",
+    image: "/img/photos/minia-dvwa.png",
     techs: [
       { label: "Kali Linux", customIcon: "/img/icons/logo-kali.png" },
       { label: "Apache", icon: "devicon-apache-plain colored" },
@@ -147,7 +147,7 @@ export const missions: Mission[] = [
     title: "Attaque par force brute",
     description:
       "Exploiter une faille d'authentification de DVWA avec Burp Suite Intruder, puis en déduire les mesures pour la corriger.",
-    image: "/img/photos/dvwa.png",
+    image: "/img/photos/minia-bruteforce.png",
     techs: [
       { label: "Kali Linux", customIcon: "/img/icons/logo-kali.png" },
       { label: "Burp Suite", icon: "devicon-burpsuite-plain colored" },
