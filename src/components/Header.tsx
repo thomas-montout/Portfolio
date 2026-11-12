@@ -14,7 +14,7 @@ const navItems: NavItem[] = [
     children: [
       { to: "/parcours", label: "Mon parcours" },
       { to: "/alternance", label: "École & alternance" },
-      { to: "/bts", label: "BTS SIO" },
+      // { to: "/bts", label: "BTS SIO" }, // page masquée
     ],
   },
   { to: "/competence", label: "Compétences" },

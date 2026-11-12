@@ -24,16 +24,16 @@ export default function BentoHero({ id = "hero" }: { id?: string }) {
         />
       </div>
 
-      {/* Cellule 2 : BTS SIO — clic = page /bts.
-          <Link> et pas <a href> : React Router change de page sans recharger le site. */}
-      <Link to="/bts" className="bento__cell bento__bts bento__cell--link">
+      {/* Cellule 2 : BTS SIO — non cliquable tant que la page /bts est masquée.
+          Pour la réactiver : remettre <Link to="/bts"> et la classe bento__cell--link. */}
+      <div className="bento__cell bento__bts">
         <span className="bento__icon">
           <i className="fa-solid fa-graduation-cap" />
         </span>
         <span className="bento__label">Formation</span>
         <h3>BTS SIO SLAM</h3>
         <p>Ynov Campus</p>
-      </Link>
+      </div>
 
       {/* Cellule 3 : Alternance Coface — clic = page /alternance (école et alternance) */}
       <Link to="/alternance" className="bento__cell bento__coface bento__cell--link">

@@ -7,7 +7,7 @@ import ScrollUI from "./components/ScrollUI";
 import Home from "./pages/Home";
 import Parcours from "./pages/Parcours";
 import EcoleAlternance from "./pages/EcoleAlternance";
-import BtsSio from "./pages/BtsSio";
+// import BtsSio from "./pages/BtsSio"; // page masquée
 import Competence from "./pages/Competence";
 import MissionsE5 from "./pages/MissionsE5";
 import MissionsE6 from "./pages/MissionsE6";
@@ -20,7 +20,7 @@ import { useRevealOnScroll } from "./hooks/useRevealOnScroll";
 //   /                     → Accueil (hero bento)
 //   /parcours             → Présentation + parcours académique et professionnel + CV
 //   /alternance           → École (Ynov) et alternance (Coface)
-//   /bts                  → Le BTS SIO (SLAM / SISR)
+//   /bts                  → Le BTS SIO (SLAM / SISR) — masquée pour l'instant
 //   /competence           → Compétences
 //   /e5                   → Projets E5 (onglets formation / entreprise / personnel + tableau de synthèse)
 //   /e6                   → Projets E6 (PlayZone)
@@ -44,7 +44,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/parcours" element={<Parcours />} />
           <Route path="/alternance" element={<EcoleAlternance />} />
-          <Route path="/bts" element={<BtsSio />} />
+          {/* <Route path="/bts" element={<BtsSio />} /> page masquée */}
           <Route path="/competence" element={<Competence />} />
           {/* Pages dédiées aux épreuves du BTS SIO. */}
           <Route path="/e5" element={<MissionsE5 />} />
