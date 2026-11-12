@@ -419,7 +419,7 @@ export const missions: Mission[] = [
     title: "Pink Monster",
     description:
       "Petit jeu de plateforme 2D en pixel art avec Phaser pour aborder la POO appliquée au jeu vidéo et la gestion d'états.",
-    image: "/img/photos/minia-pinkmonster.png",
+    image: "/img/photos/minia-pinkmonster.jpg",
     techs: [
       { label: "Phaser", customIcon: "/img/icons/phaser-logo.png" },
       { label: "JavaScript", icon: "devicon-javascript-plain colored" },
